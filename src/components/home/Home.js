@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import actions from '../../services/index'
-
+import actions from '../../services/index';
+import SignUp from '../auth/SignUp'
 
 class Home extends Component {
   async componentDidMount() {

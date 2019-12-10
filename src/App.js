@@ -5,6 +5,7 @@ import NotFound from "./components/404/NotFound.js";
 import SignUp from "./components/auth/SignUp";
 import LogIn from "./components/auth/LogIn";
 import Profile from "./components/profile/Profile";
+import MyTrips from "./components/profile/MyTrips";
 import actions from "./services/index";
 import moduleName from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -82,6 +83,12 @@ class App extends Component {
             path="/profile"
             render={props => <Profile {...props} user={this.state} />}
           />
+           <Route
+            exact
+            path="/mytrips/:id"
+            render={props => <MyTrips {...props} user={this.state} />}
+          />
+
 
           <Route component={NotFound} />
         </Switch>
