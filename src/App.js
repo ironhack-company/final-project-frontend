@@ -20,18 +20,18 @@ class App extends Component {
   
   logOut = async () => {
     let res = await actions.logOut()
-    this.setUser({email:null, createdAt: null, updatedAt: null, _id: null }) //FIX 
+    this.setUser({username:null, createdAt: null, updatedAt: null, _id: null }) //FIX 
   }
 
   render(){
 
     return (
     <BrowserRouter>
-      {this.state.email}
+      {this.state.username}
       <nav>
         <NavLink to="/">Home |</NavLink>
   
-        {this.state.email ? 
+        {this.state.username ? 
           <Fragment>
            <NavLink onClick={this.logOut} to='/'>Log Out |</NavLink> 
            <NavLink to="/profile">Profile|</NavLink>
