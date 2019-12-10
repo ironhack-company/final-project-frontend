@@ -20,7 +20,7 @@ class Home extends Component {
   render() {
     console.log(this.props);
     return (
-      <Jumbotron className="jumbotron d-flex justify-content-around p-2 flex-lg-nowrap flex-md-wrap">
+      <Container className="d-flex justify-content-around p-2 flex-lg-nowrap flex-wrap">
         <Container className="p-3">
           <h1>Hello, travelers!</h1>
           <p>
@@ -35,7 +35,7 @@ class Home extends Component {
         <Container className="p-3">
           <SignUp {...this.props} setUser={this.props.setUser} />
         </Container>
-      </Jumbotron>
+      </Container>
     );
   }
 }
