@@ -8,7 +8,14 @@ import Profile from "./components/profile/Profile";
 import actions from "./services/index";
 import moduleName from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Navbar, Nav, Form, FormControl, Button } from "react-bootstrap";
+import {
+  Navbar,
+  Nav,
+  Form,
+  FormControl,
+  Button,
+  NavItem
+} from "react-bootstrap";
 import css from "./index.css";
 
 class App extends Component {
@@ -31,39 +38,52 @@ class App extends Component {
       <BrowserRouter>
         <Navbar bg="light" expand="lg">
           <Navbar.Brand>
-            <NavLink to="/">TripApp</NavLink>
+            <NavLink to="/" className="text-dark">
+              TripApp
+            </NavLink>
           </Navbar.Brand>
-          <Form inline>
-            <FormControl
-              type="text"
-              placeholder="Input your destination"
-              className="mr-sm-2"
-            />
-            {/* <Button variant="outline-info">Search</Button> */}
-          </Form>
-          <Nav className="mr-auto">
-            <NavLink to="/">Home</NavLink>
-          </Nav>
-          <Nav>
-            {this.state.email ? (
-              <Fragment>
-                Logged in as {this.state.username}
-                <NavLink to="/profile">Profile</NavLink>
-                <NavLink className="NavLink" onClick={this.logOut} to="/">
-                  Log Out
-                </NavLink>
-              </Fragment>
-            ) : (
-              <Fragment>
-                <NavLink className="mr-2" to="/sign-up">
-                  Sign Up
-                </NavLink>
-                <NavLink className="mr-2" to="/log-in">
-                  Log In
-                </NavLink>
-              </Fragment>
-            )}
-          </Nav>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Form inline>
+              <FormControl
+                type="text"
+                placeholder="Input your destination"
+                className="mr-sm-2"
+              />
+              {/* <Button variant="outline-info">Search</Button> */}
+            </Form>
+            <Nav className="ml-auto">
+              <NavLink to="/" className="mr-2 text-dark">
+                Home
+              </NavLink>
+              {this.state.email ? (
+                <Fragment>
+                  <NavItem className="mr-2  text-dark">
+                    Logged in as {this.state.username}
+                  </NavItem>
+                  <NavLink className="mr-2 text-dark" to="/profile">
+                    Profile
+                  </NavLink>
+                  <NavLink
+                    className="mar-2 text-dark"
+                    onClick={this.logOut}
+                    to="/"
+                  >
+                    Log Out
+                  </NavLink>
+                </Fragment>
+              ) : (
+                <Fragment>
+                  <NavLink className="mr-2 text-dark" to="/sign-up">
+                    Sign Up
+                  </NavLink>
+                  <NavLink className="mr-2 text-dark" to="/log-in">
+                    Log In
+                  </NavLink>
+                </Fragment>
+              )}
+            </Nav>
+          </Navbar.Collapse>
         </Navbar>
         <Switch>
           <Route exact path="/" render={props => <Home {...props} />} />
