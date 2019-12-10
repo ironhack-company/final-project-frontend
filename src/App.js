@@ -5,17 +5,11 @@ import NotFound from "./components/404/NotFound.js";
 import SignUp from "./components/auth/SignUp";
 import LogIn from "./components/auth/LogIn";
 import Profile from "./components/profile/Profile";
+import MyTrips from "./components/profile/MyTrips";
 import actions from "./services/index";
 import moduleName from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {
-  Navbar,
-  Nav,
-  Form,
-  FormControl,
-  Button,
-  NavItem
-} from "react-bootstrap";
+import { Navbar, Nav, Form, FormControl, NavItem } from "react-bootstrap";
 import css from "./index.css";
 import FlightSearch from "./components/Flights/FlightSearch";
 
@@ -28,7 +22,6 @@ class App extends Component {
   }
 
   setUser = user => this.setState(user);
-
   logOut = async () => {
     let res = await actions.logOut();
     this.setUser({ email: null, createdAt: null, updatedAt: null, _id: null }); //FIX
@@ -90,7 +83,11 @@ class App extends Component {
           </Navbar.Collapse>
         </Navbar>
         <Switch>
-          <Route exact path="/" render={props => <Home {...props} />} />
+          <Route
+            exact
+            path="/"
+            render={props => <Home {...props} setUser={this.setUser} />}
+          />
           <Route
             exact
             path="/sign-up"
@@ -111,6 +108,12 @@ class App extends Component {
             path="/profile"
             render={props => <Profile {...props} user={this.state} />}
           />
+           <Route
+            exact
+            path="/mytrips/:id"
+            render={props => <MyTrips {...props} user={this.state} />}
+          />
+
 
           <Route component={NotFound} />
         </Switch>
