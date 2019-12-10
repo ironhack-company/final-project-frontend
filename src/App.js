@@ -9,8 +9,9 @@ import MyTrips from "./components/profile/MyTrips";
 import actions from "./services/index";
 import moduleName from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Navbar, Nav, Form, FormControl, Button } from "react-bootstrap";
+import { Navbar, Nav, Form, FormControl, NavItem } from "react-bootstrap";
 import css from "./index.css";
+import FlightSearch from "./components/Flights/FlightSearch";
 
 class App extends Component {
   state = {};
@@ -21,7 +22,6 @@ class App extends Component {
   }
 
   setUser = user => this.setState(user);
-
   logOut = async () => {
     let res = await actions.logOut();
     this.setUser({ email: null, createdAt: null, updatedAt: null, _id: null }); //FIX
@@ -32,46 +32,71 @@ class App extends Component {
       <BrowserRouter>
         <Navbar bg="light" expand="lg">
           <Navbar.Brand>
-            <NavLink to="/">TripApp</NavLink>
+            <NavLink to="/" className="text-dark">
+              TripApp
+            </NavLink>
           </Navbar.Brand>
-          <Form inline>
-            <FormControl
-              type="text"
-              placeholder="Input your destination"
-              className="mr-sm-2"
-            />
-            {/* <Button variant="outline-info">Search</Button> */}
-          </Form>
-          <Nav className="mr-auto">
-            <NavLink to="/">Home</NavLink>
-          </Nav>
-          <Nav>
-            {this.state.email ? (
-              <Fragment>
-                Logged in as {this.state.username}
-                <NavLink to="/profile">Profile</NavLink>
-                <NavLink className="NavLink" onClick={this.logOut} to="/">
-                  Log Out
-                </NavLink>
-              </Fragment>
-            ) : (
-              <Fragment>
-                <NavLink className="mr-2" to="/sign-up">
-                  Sign Up
-                </NavLink>
-                <NavLink className="mr-2" to="/log-in">
-                  Log In
-                </NavLink>
-              </Fragment>
-            )}
-          </Nav>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Form inline>
+              <FormControl
+                type="text"
+                placeholder="Input your destination"
+                className="mr-sm-2"
+              />
+              {/* <Button variant="outline-info">Search</Button> */}
+            </Form>
+            <Nav className="ml-auto">
+              <NavLink to="/" className="mr-2 text-dark">
+                Home
+              </NavLink>
+              {this.state.email ? (
+                <Fragment>
+                  <NavItem className="mr-2  text-dark">
+                    Logged in as {this.state.username}
+                  </NavItem>
+                  <NavLink className="mr-2 text-dark" to="/flight-search">
+                    Flight
+                  </NavLink>
+                  <NavLink className="mr-2 text-dark" to="/profile">
+                    Profile
+                  </NavLink>
+                  <NavLink
+                    className="mar-2 text-dark"
+                    onClick={this.logOut}
+                    to="/"
+                  >
+                    Log Out
+                  </NavLink>
+                </Fragment>
+              ) : (
+                <Fragment>
+                  <NavLink className="mr-2 text-dark" to="/sign-up">
+                    Sign Up
+                  </NavLink>
+                  <NavLink className="mr-2 text-dark" to="/log-in">
+                    Log In
+                  </NavLink>
+                </Fragment>
+              )}
+            </Nav>
+          </Navbar.Collapse>
         </Navbar>
         <Switch>
-          <Route exact path="/" render={props => <Home {...props} />} />
+          <Route
+            exact
+            path="/"
+            render={props => <Home {...props} setUser={this.setUser} />}
+          />
           <Route
             exact
             path="/sign-up"
             render={props => <SignUp {...props} setUser={this.setUser} />}
+          />
+          <Route
+            exact
+            path="/flight-search"
+            render={props => <FlightSearch {...props} setUser={this.setUser} />}
           />
           <Route
             exact

@@ -1,16 +1,41 @@
-import React, { Component } from 'react';
-import actions from '../../services/index';
-import SignUp from '../auth/SignUp'
+import React, { Component } from "react";
+import actions from "../../services/index";
+import { Button, Jumbotron, Container } from "react-bootstrap";
+import SignUp from "../auth/SignUp";
 
 class Home extends Component {
+  state = {};
+  handleChange = e => this.setState({ [e.target.name]: e.target.value });
+
+  handleSubmit = async e => {
+    e.preventDefault();
+    let user = await actions.signUp(this.state);
+    this.props.setUser({ ...user.data });
+  };
+
   async componentDidMount() {
     //actions.test()
   }
+
   render() {
+    console.log(this.props);
     return (
-      <div>
-        
-      </div>
+      <Jumbotron className="jumbotron d-flex justify-content-around p-2">
+        <Container className="p-5">
+          <h1>Hello, travelers!</h1>
+          <p>
+            This is a simple hero unit, a simple jumbotron-style component for
+            calling extra attention to featured content or information.
+          </p>
+          <p>
+            <Button variant="outline-primary">Log In</Button>
+            <Button variant="outline-primary">Sign Up</Button>
+          </p>
+        </Container>
+        <Container className="p-5">
+          <SignUp {...this.props} setUser={this.props.setUser} />
+        </Container>
+      </Jumbotron>
     );
   }
 }
