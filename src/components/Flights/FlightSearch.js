@@ -89,10 +89,9 @@ export default class FlightSearch extends Component {
 		if (copyQuotes.length > 0) {
 			console.log(copyQuotes)
 			return (copyQuotes.map((keyName, i) => {
-				// let logo = this.state.logos.filter(eachCompany => {
+				let logo = this.state.logos.filter(eachCompany => {
 					return eachCompany.carrierId === keyName.InboundLeg.CarrierIds[0]
-                // }
-                // )
+				})
 				// console.log(logo[0].logo, '90909090')
 
 				return (
