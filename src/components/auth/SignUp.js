@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from "react";
 import actions from "../../services/index";
+import { Link } from "react-router-dom";
 
 class SignUp extends Component {
   state = {};
@@ -13,6 +14,12 @@ class SignUp extends Component {
     return (
       <Fragment>
         <h2>SignUP</h2>
+        <p>
+          <span>Already signed up? </span>
+          <Link to="/log-in" className="text-dark">
+            Log In Here
+          </Link>
+        </p>
         <form onSubmit={this.handleSubmit}>
           <p>Name:</p>
           <input name="firstName" type="text" onChange={this.handleChange} />
@@ -21,7 +28,7 @@ class SignUp extends Component {
           <input name="email" type="email" onChange={this.handleChange} />
           <p>Profile Image:</p>
           <input name="profileImg" type="text" onChange={this.handleChange} />
-          <p>New Username:</p>
+          <p>Username:</p>
           <input name="username" type="text" onChange={this.handleChange} />
           <p>Password:</p>
           <input name="password" type="password" onChange={this.handleChange} />

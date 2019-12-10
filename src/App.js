@@ -10,7 +10,6 @@ import actions from "./services/index";
 import moduleName from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Navbar, Nav, Form, FormControl, NavItem } from "react-bootstrap";
-import css from "./index.css";
 import FlightSearch from "./components/Flights/FlightSearch";
 
 class App extends Component {
@@ -38,14 +37,6 @@ class App extends Component {
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Form inline>
-              <FormControl
-                type="text"
-                placeholder="Input your destination"
-                className="mr-sm-2"
-              />
-              {/* <Button variant="outline-info">Search</Button> */}
-            </Form>
             <Nav className="ml-auto">
               <NavLink to="/" className="mr-2 text-dark">
                 Home
@@ -108,12 +99,11 @@ class App extends Component {
             path="/profile"
             render={props => <Profile {...props} user={this.state} />}
           />
-           <Route
+          <Route
             exact
             path="/mytrips/:id"
             render={props => <MyTrips {...props} user={this.state} />}
           />
-
 
           <Route component={NotFound} />
         </Switch>
