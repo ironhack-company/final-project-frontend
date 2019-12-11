@@ -10,7 +10,6 @@ import actions from "./services/index";
 import moduleName from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Navbar, Nav, Form, FormControl, NavItem } from "react-bootstrap";
-import css from "./index.css";
 import FlightSearch from "./components/Flights/FlightSearch";
 import HotelSearch from "./components/Flights/HotelSearch";
 
@@ -39,14 +38,6 @@ class App extends Component {
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Form inline>
-              <FormControl
-                type="text"
-                placeholder="Input your destination"
-                className="mr-sm-2"
-              />
-              {/* <Button variant="outline-info">Search</Button> */}
-            </Form>
             <Nav className="ml-auto">
               <NavLink to="/" className="mr-2 text-dark">
                 Home
@@ -58,6 +49,9 @@ class App extends Component {
                   </NavItem>
                   <NavLink className="mr-2 text-dark" to="/flight-search">
                     Flight
+                  </NavLink>
+                  <NavLink className="mr-2 text-dark" to="/hotel-search">
+                    Hotels
                   </NavLink>
                   <NavLink className="mr-2 text-dark" to="/profile">
                     Profile
@@ -97,6 +91,11 @@ class App extends Component {
           <Route
             exact
             path="/flight-search"
+            render={props => <FlightSearch {...props} setUser={this.setUser} />}
+          />
+           <Route
+            exact
+            path="/hotel-search"
             render={props => <HotelSearch {...props} setUser={this.setUser} />}
           />
           <Route
@@ -109,12 +108,11 @@ class App extends Component {
             path="/profile"
             render={props => <Profile {...props} user={this.state} />}
           />
-           <Route
+          <Route
             exact
             path="/mytrips/:id"
             render={props => <MyTrips {...props} user={this.state} />}
           />
-
 
           <Route component={NotFound} />
         </Switch>
