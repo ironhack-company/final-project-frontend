@@ -12,6 +12,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Navbar, Nav, Form, FormControl, NavItem } from "react-bootstrap";
 import css from "./index.css";
 import FlightSearch from "./components/Flights/FlightSearch";
+import HotelSearch from "./components/Flights/HotelSearch";
 
 class App extends Component {
   state = {};
@@ -96,7 +97,7 @@ class App extends Component {
           <Route
             exact
             path="/flight-search"
-            render={props => <FlightSearch {...props} setUser={this.setUser} />}
+            render={props => <HotelSearch {...props} setUser={this.setUser} />}
           />
           <Route
             exact
