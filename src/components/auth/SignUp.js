@@ -13,7 +13,7 @@ class SignUp extends Component {
   render() {
     return (
       <Fragment>
-        <h2>SignUP</h2>
+        <h2 className="display-4">Sign Up</h2>
         <p>
           <span>Already signed up? </span>
           <Link to="/log-in" className="text-dark">

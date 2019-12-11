@@ -20,10 +20,10 @@ class Home extends Component {
   render() {
     console.log(this.props);
     return (
-      <Container className="d-flex justify-content-around p-2 flex-lg-nowrap flex-wrap">
+      <Jumbotron className="mb-0 overflow-hidden d-flex justify-content-around flex-lg-nowrap flex-wrap min-vh-100 align-items-stretch bg">
         <Container className="p-3">
-          <h1>Hello, travelers!</h1>
-          <p>
+          <h1 className="display-2">Hello, travelers!</h1>
+          <p className="lead">
             This is a simple hero unit, a simple jumbotron-style component for
             calling extra attention to featured content or information.
           </p>
@@ -32,10 +32,10 @@ class Home extends Component {
             <Button variant="outline-primary">Sign Up</Button>
           </p> */}
         </Container>
-        <Container className="p-3">
+        <Container className="p-3 rounded bg-opacity">
           <SignUp {...this.props} setUser={this.props.setUser} />
         </Container>
-      </Container>
+      </Jumbotron>
     );
   }
 }
