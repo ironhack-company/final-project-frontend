@@ -1,7 +1,14 @@
-import React, { Component, Fragment } from 'react';
-import actions from '../../services/index'
+import React, { Component, Fragment } from "react";
+import actions from "../../services/index";
+import { Link } from "react-router-dom";
 
 class LogIn extends Component {
+  state = {};
+  handleChange = e => {
+    this.setState({ [e.target.name]: e.target.value }, () => {
+      console.log(this.state);
+    });
+  };
 
     state = {
 
