@@ -9,23 +9,7 @@ export default class FlightSearch extends Component {
 		super();
 
 		this.state = {
-			quotes: [],
-			data: [],
-			places: [],
-			cityFrom: [],
-			cityTo: [],
-			carriers: [],
-			loading: false,
-			temperature: undefined,
-			city: undefined,
-			country: undefined,
-			humidity: undefined,
-			description: undefined,
-			error: undefined,
-			// startDate: moment(),
-			// endDate: moment().add(3, 'days'),
-			width: 0,
-
+			flights: [],
 
 		}
 	}
@@ -83,92 +67,92 @@ export default class FlightSearch extends Component {
       
     }
 
-    showPrices = (e) => {
+    // showPrices = (e) => {
 
-		let copyQuotes = [...this.state.flights]
-		if (copyQuotes.length > 0) {
-			console.log(copyQuotes)
-			return (copyQuotes.map((keyName, i) => {
-				let logo = this.state.logos.filter(eachCompany => {
-					return eachCompany.carrierId === keyName.InboundLeg.CarrierIds[0]
-				})
-				// console.log(logo[0].logo, '90909090')
+	// 	let copyQuotes = [...this.state.flights]
+	// 	if (copyQuotes.length > 0) {
+	// 		console.log(copyQuotes)
+	// 		return (copyQuotes.map((keyName, i) => {
+	// 			let logo = this.state.logos.filter(eachCompany => {
+	// 				return eachCompany.carrierId === keyName.InboundLeg.CarrierIds[0]
+	// 			})
+	// 			// console.log(logo[0].logo, '90909090')
 
-				return (
+	// 			return (
 
-                    <div>
+    //                 <div>
 
-                    </div>
+    //                 </div>
 
-					// <div className="flight flex">
+	// 				// <div className="flight flex">
 
-					// 	<div className="flight-buy">
-					// 		{logo[0] ?
-					// 			<img src={logo[0].logo} className="airline-logo" alt="Turkish airlines" />
-					// 			:
-					// 			<img src='./images/alaska.svg' className="airline-logo" alt="Alaska airlines" />
+	// 				// 	<div className="flight-buy">
+	// 				// 		{logo[0] ?
+	// 				// 			<img src={logo[0].logo} className="airline-logo" alt="Turkish airlines" />
+	// 				// 			:
+	// 				// 			<img src='./images/alaska.svg' className="airline-logo" alt="Alaska airlines" />
 
-					// 		}
-					// 		<button>
+	// 				// 		}
+	// 				// 		<button>
 
-					// 			{keyName.MinPrice} USD
-					//   </button>
-					// 	</div>
-					// 	<div className="flight-info flex">
-					// 		<div>
-					// 			{/* <h3></h3> */}
-					// 			<span>{this.state.cityTo}</span>
-					// 			<span className="gray">
-					// 				{/* { departure } */}
-					// 				Inbound
-					// 	  </span>
-					// 		</div>
-					// 		<div>
-					// 			<span className="gray">
-					// 				{/* {keyName.MinPrice} */}
-					// 				🛫
-					// 	  </span>
-					// 		</div>
-					// 		<div>
-					// 			{/* <h3></h3> */}
-					// 			<span>{this.state.cityFrom}</span>
-					// 			<span className="gray">
-					// 				Inbound
-					// 	  </span>
-					// 		</div>
-					// 	</div>
+	// 				// 			{keyName.MinPrice} USD
+	// 				//   </button>
+	// 				// 	</div>
+	// 				// 	<div className="flight-info flex">
+	// 				// 		<div>
+	// 				// 			{/* <h3></h3> */}
+	// 				// 			<span>{this.state.cityTo}</span>
+	// 				// 			<span className="gray">
+	// 				// 				{/* { departure } */}
+	// 				// 				Inbound
+	// 				// 	  </span>
+	// 				// 		</div>
+	// 				// 		<div>
+	// 				// 			<span className="gray">
+	// 				// 				{/* {keyName.MinPrice} */}
+	// 				// 				🛫
+	// 				// 	  </span>
+	// 				// 		</div>
+	// 				// 		<div>
+	// 				// 			{/* <h3></h3> */}
+	// 				// 			<span>{this.state.cityFrom}</span>
+	// 				// 			<span className="gray">
+	// 				// 				Inbound
+	// 				// 	  </span>
+	// 				// 		</div>
+	// 				// 	</div>
 
-					// 	<div className="flight-info2 flex2">
-					// 		<div>
-					// 			{/* <h3></h3> */}
-					// 			<span>{this.state.cityFrom}</span>
-					// 			<span className="gray">
-					// 				{/* { departure } */}
-					// 				Outbound
-					// 	  </span>
-					// 		</div>
-					// 		<div>
-					// 			<span className="gray">
-					// 				{/* {keyName.MinPrice} USD */}
-					// 				🛬
-					// 	  </span>
-					// 		</div>
-					// 		<div>
-					// 			{/* <h3></h3> */}
-					// 			<span>{this.state.cityTo}</span>
-					// 			<span className="gray">
-					// 				Outbound
-					// 	  </span>
-					// 		</div>
-					// 	</div>
+	// 				// 	<div className="flight-info2 flex2">
+	// 				// 		<div>
+	// 				// 			{/* <h3></h3> */}
+	// 				// 			<span>{this.state.cityFrom}</span>
+	// 				// 			<span className="gray">
+	// 				// 				{/* { departure } */}
+	// 				// 				Outbound
+	// 				// 	  </span>
+	// 				// 		</div>
+	// 				// 		<div>
+	// 				// 			<span className="gray">
+	// 				// 				{/* {keyName.MinPrice} USD */}
+	// 				// 				🛬
+	// 				// 	  </span>
+	// 				// 		</div>
+	// 				// 		<div>
+	// 				// 			{/* <h3></h3> */}
+	// 				// 			<span>{this.state.cityTo}</span>
+	// 				// 			<span className="gray">
+	// 				// 				Outbound
+	// 				// 	  </span>
+	// 				// 		</div>
+	// 				// 	</div>
 
 
-					// </div>
-				)
-			}
-			))
-		}
-	}
+	// 				// </div>
+	// 			)
+	// 		}
+	// 		))
+	// 	}
+	// }
 
     render() {
         return (

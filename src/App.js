@@ -11,6 +11,7 @@ import moduleName from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Navbar, Nav, Form, FormControl, NavItem } from "react-bootstrap";
 import FlightSearch from "./components/Flights/FlightSearch";
+import HotelSearch from "./components/Flights/HotelSearch";
 
 class App extends Component {
   state = {};
@@ -48,6 +49,9 @@ class App extends Component {
                   </NavItem>
                   <NavLink className="mr-2 text-dark" to="/flight-search">
                     Flight
+                  </NavLink>
+                  <NavLink className="mr-2 text-dark" to="/hotel-search">
+                    Hotels
                   </NavLink>
                   <NavLink className="mr-2 text-dark" to="/profile">
                     Profile
@@ -88,6 +92,11 @@ class App extends Component {
             exact
             path="/flight-search"
             render={props => <FlightSearch {...props} setUser={this.setUser} />}
+          />
+           <Route
+            exact
+            path="/hotel-search"
+            render={props => <HotelSearch {...props} setUser={this.setUser} />}
           />
           <Route
             exact
