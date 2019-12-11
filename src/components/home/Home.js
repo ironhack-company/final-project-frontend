@@ -20,7 +20,7 @@ class Home extends Component {
   render() {
     console.log(this.props);
     return (
-      <Jumbotron className="mb-0 overflow-hidden d-flex justify-content-around flex-lg-nowrap flex-wrap min-vh-100 align-items-stretch bg">
+      <Jumbotron className="text-white mb-0 overflow-hidden d-flex justify-content-around flex-lg-nowrap flex-wrap min-vh-100 align-items-stretch bg">
         <Container className="p-3">
           <h1 className="display-2">Hello, travelers!</h1>
           <p className="lead">
