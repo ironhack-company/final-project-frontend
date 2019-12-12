@@ -70,6 +70,8 @@ export default class HotelSearch extends Component {
     render() {
         return (
             <div>
+
+                
                 
             </div>
         )
