@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import axios from "axios";
 
 export default class FlightSearch extends Component {
@@ -6,12 +6,20 @@ export default class FlightSearch extends Component {
     super();
 
     this.state = {
-      flights: []
+      searchQuery: "",
+      flights: [],
+      filteredFlights: []
     };
   }
 
-  componentDidMount() {
+  //   componentDidMount() {
+  //     console.log("componentDidMount!");
+  //   }
+
+  // get flight data here
+  getFlights = () => {
     //get token on mount
+    console.log("getFlight!");
     fetch("https://test.api.amadeus.com/v1/security/oauth2/token", {
       body:
         "grant_type=client_credentials&client_id=AAAIgJEuGHf4LReD2lxXUiGEcrHHL5Q6&client_secret=PyEChDme4fGCMvzZ",
@@ -23,31 +31,58 @@ export default class FlightSearch extends Component {
       .then(res => res.json())
       .then(r => {
         console.log(r);
-        let token = r.access_token; //comes here
-        const RAPIDAPI_API_URL = `https://test.api.amadeus.com/v1/shopping/flight-destinations?origin=MAD`;
+        let token = r.access_token; //token comes here
+        const RAPIDAPI_API_URL = `https://test.api.amadeus.com/v1/shopping/flight-destinations?origin=${this.state.searchQuery}`; // if you fetch in componentDidMount it returns error because there is no origin when the page is loaded
+        console.log(this.state, RAPIDAPI_API_URL, "[][][[]");
         const RAPIDAPI_REQUEST_HEADERS = {
           Authorization: `Bearer ${token}` //token goes here
         };
 
         axios
-          .get(RAPIDAPI_API_URL, { headers: RAPIDAPI_REQUEST_HEADERS }) //use token to get data
+          .get(RAPIDAPI_API_URL, {
+            headers: RAPIDAPI_REQUEST_HEADERS
+          }) //use token to get data
           .then(response => {
             const data = response.data.data;
-            console.log("data", data.data);
+            console.log("data", response, data.data);
 
             this.setState({
-              flights: data //set teh flights to state
+              flights: data, //set the flights to state
+              filteredFlights: data
             });
           })
           .catch(error => {
             console.error("create student error", error.response);
           });
       });
-  }
+  };
 
-  // show flights
+  handleInputChange = e => {
+    console.log(this.state);
+    this.setState({
+      searchQuery: e.target.value
+    });
+    let filteredFlights = this.state.flights.filter((flight, i) => {
+      if (
+        flight.origin
+          .toLowerCase()
+          .includes(this.state.searchQuery.toLowerCase())
+      ) {
+        return flight;
+      }
+    });
+    this.setState({
+      filteredFlights: filteredFlights
+    });
+  };
+
+  handleSubmit = e => {
+    e.preventDefault();
+    this.getFlights(); //after the user told you what to
+  };
+
   showFlights = () => {
-    return this.state.flights.map((flight, index) => {
+    return this.state.filteredFlights.map((flight, index) => {
       console.log(flight);
       return (
         <ul key={index}>
@@ -62,6 +97,20 @@ export default class FlightSearch extends Component {
   };
 
   render() {
-    return <div>{this.showFlights()}</div>;
+    return (
+      <Fragment>
+        <div>
+          <form onSubmit={this.handleSubmit}>
+            <input
+              placeholder="Input your location"
+              value={this.state.query}
+              onChange={this.handleInputChange}
+            />
+            <input type="submit" value="Search cheap flights" />
+          </form>
+        </div>
+        <div>{this.showFlights()}</div>
+      </Fragment>
+    );
   }
 }
