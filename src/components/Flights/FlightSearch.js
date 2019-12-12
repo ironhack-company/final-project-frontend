@@ -11,12 +11,23 @@ export class FlightSearch extends Component {
 			flights: [],
 			filteredFlights: [],
 			userLocation: { lat: 32, lng: 32 },
-			loading: true 
+			loading: true ,
+			showingInfoWindow: false,
+			activeMarker: {},
+			selectedPlace: {},
 		}
 	
 
 
     componentDidMount() {
+		console.log("Components!")
+		axios.get("http://localhost:5000/flight-search")
+		.then(data => 
+			this.setState({
+				airports: data.data
+			}, 
+			)
+		)
 		  navigator.geolocation.getCurrentPosition(
 			position => {
 			  const { latitude, longitude } = position.coords;
@@ -31,6 +42,32 @@ export class FlightSearch extends Component {
 			}
 		  );
 		}
+
+	getLocationData = () => {
+		if (this.state.airports) {
+
+			return this.state.airports.map(eachAirport => {
+				return (
+	
+					<Marker 
+					title = {eachAirport.name}
+					onMouseover={this.onMouseoverMarker}
+					name={eachAirport.name}
+					position={{lat: eachAirport._geoloc.lat, lng: eachAirport._geoloc.lng }}
+					/>
+				)
+			}
+				)
+		}
+	}
+	onMouseoverMarker = (props, marker, e) => {
+			this.setState({
+				selectedPlace: props,
+				activeMarker: marker,
+				showingInfoWindow: true
+			})
+		}
+	
 
 		getFlights = () => {
 			//get token on mount
@@ -111,7 +148,10 @@ export class FlightSearch extends Component {
 			});
 		  };
 	
-    render() {
+		  
+	render() {
+		
+
 		const { loading, userLocation } = this.state;
 		const { google } = this.props;
 	
@@ -139,12 +179,17 @@ export class FlightSearch extends Component {
         zoom={10}>
         <Marker onClick={this.onMarkerClick}
                 name={'Current location'} />
- 
-        <InfoWindow onClose={this.onInfoWindowClose}>
-            {/* <div>
+ {this.getLocationData()}
+ 	<InfoWindow
+          marker={this.state.activeMarker}
+          visible={this.state.showingInfoWindow}>
+            <div>
               <h1>{this.state.selectedPlace.name}</h1>
-            </div> */}
+            </div>
         </InfoWindow>
+	
+	
+
       </Map>
 
             </div>
