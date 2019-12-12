@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
 import axios from 'axios'
+import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
 
 
-
-
-export default class FlightSearch extends Component {
+export class FlightSearch extends Component {
     constructor() {
 		super();
 
 		this.state = {
 			flights: [],
-
+			userLocation: { lat: 32, lng: 32 },
+			loading: true 
 		}
 	}
 
@@ -38,8 +38,7 @@ export default class FlightSearch extends Component {
                 
                 this.setState({
                     flights: response.data,
-                  
-
+					
                 });
 
               })
@@ -64,101 +63,50 @@ export default class FlightSearch extends Component {
           }).catch(err => console.log(err))
       
           const RAPIDAPI_API_URL = `https://test.api.amadeus.com/v1/shopping/flight-destinations?origin=MAD`;
-      
-    }
-
-    // showPrices = (e) => {
-
-	// 	let copyQuotes = [...this.state.flights]
-	// 	if (copyQuotes.length > 0) {
-	// 		console.log(copyQuotes)
-	// 		return (copyQuotes.map((keyName, i) => {
-	// 			let logo = this.state.logos.filter(eachCompany => {
-	// 				return eachCompany.carrierId === keyName.InboundLeg.CarrierIds[0]
-	// 			})
-	// 			// console.log(logo[0].logo, '90909090')
-
-	// 			return (
-
-    //                 <div>
-
-    //                 </div>
-
-	// 				// <div className="flight flex">
-
-	// 				// 	<div className="flight-buy">
-	// 				// 		{logo[0] ?
-	// 				// 			<img src={logo[0].logo} className="airline-logo" alt="Turkish airlines" />
-	// 				// 			:
-	// 				// 			<img src='./images/alaska.svg' className="airline-logo" alt="Alaska airlines" />
-
-	// 				// 		}
-	// 				// 		<button>
-
-	// 				// 			{keyName.MinPrice} USD
-	// 				//   </button>
-	// 				// 	</div>
-	// 				// 	<div className="flight-info flex">
-	// 				// 		<div>
-	// 				// 			{/* <h3></h3> */}
-	// 				// 			<span>{this.state.cityTo}</span>
-	// 				// 			<span className="gray">
-	// 				// 				{/* { departure } */}
-	// 				// 				Inbound
-	// 				// 	  </span>
-	// 				// 		</div>
-	// 				// 		<div>
-	// 				// 			<span className="gray">
-	// 				// 				{/* {keyName.MinPrice} */}
-	// 				// 				🛫
-	// 				// 	  </span>
-	// 				// 		</div>
-	// 				// 		<div>
-	// 				// 			{/* <h3></h3> */}
-	// 				// 			<span>{this.state.cityFrom}</span>
-	// 				// 			<span className="gray">
-	// 				// 				Inbound
-	// 				// 	  </span>
-	// 				// 		</div>
-	// 				// 	</div>
-
-	// 				// 	<div className="flight-info2 flex2">
-	// 				// 		<div>
-	// 				// 			{/* <h3></h3> */}
-	// 				// 			<span>{this.state.cityFrom}</span>
-	// 				// 			<span className="gray">
-	// 				// 				{/* { departure } */}
-	// 				// 				Outbound
-	// 				// 	  </span>
-	// 				// 		</div>
-	// 				// 		<div>
-	// 				// 			<span className="gray">
-	// 				// 				{/* {keyName.MinPrice} USD */}
-	// 				// 				🛬
-	// 				// 	  </span>
-	// 				// 		</div>
-	// 				// 		<div>
-	// 				// 			{/* <h3></h3> */}
-	// 				// 			<span>{this.state.cityTo}</span>
-	// 				// 			<span className="gray">
-	// 				// 				Outbound
-	// 				// 	  </span>
-	// 				// 		</div>
-	// 				// 	</div>
-
-
-	// 				// </div>
-	// 			)
-	// 		}
-	// 		))
-	// 	}
-	// }
-
+			
+		  navigator.geolocation.getCurrentPosition(
+			position => {
+			  const { latitude, longitude } = position.coords;
+	  
+			  this.setState({
+				userLocation: { lat: latitude, lng: longitude },
+				loading: false
+			  });
+			},
+			() => {
+			  this.setState({ loading: false });
+			}
+		  );
+		}
+	
     render() {
+		const { loading, userLocation } = this.state;
+		const { google } = this.props;
+	
+		if (loading) {
+		  return null;
+		}
         return (
             <div>
-                
+				 <Map
+        google={google}
+        initialCenter={userLocation}
+        zoom={10}>
+        <Marker onClick={this.onMarkerClick}
+                name={'Current location'} />
+ 
+        <InfoWindow onClose={this.onInfoWindowClose}>
+            {/* <div>
+              <h1>{this.state.selectedPlace.name}</h1>
+            </div> */}
+        </InfoWindow>
+      </Map>
             </div>
         )
     }
 }
+
+
+export default GoogleApiWrapper({
+	apiKey: ("AIzaSyC_Ryd8LuP-hChe7SPdvM_naB5ofhdF2QQ")
+  })(FlightSearch)
