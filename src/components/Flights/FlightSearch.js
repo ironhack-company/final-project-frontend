@@ -101,6 +101,7 @@ export class FlightSearch extends Component {
           <li>Depart: {flight.departureDate}</li>
           <li>Return: {flight.returnDate}</li>
           <li>Price: ${flight.price.total}</li>
+          <button>Check prices to {flight.destination}</button>
         </ul>
       );
     });
