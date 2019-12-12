@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import axios from "axios";
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from "google-maps-react";
+import { Link, Redirect } from "react-router-dom";
 
 export class FlightSearch extends Component {
   state = {
@@ -37,7 +38,7 @@ export class FlightSearch extends Component {
 
   getLocationData = () => {
     if (this.state.airports) {
-      return this.state.airports.map(eachAirport => {
+      return this.state.airports.map((eachAirport,i) => {
         return (
           <Marker
             title={eachAirport.name}
@@ -47,6 +48,7 @@ export class FlightSearch extends Component {
               lat: eachAirport._geoloc.lat,
               lng: eachAirport._geoloc.lng
             }}
+            key={i}
           />
         );
       });
@@ -62,7 +64,7 @@ export class FlightSearch extends Component {
 
   getFlights = () => {
     //get token on mount
-	console.log("getFlight!");
+    console.log("getFlight!");
     fetch("https://test.api.amadeus.com/v1/security/oauth2/token", {
       body:
         "grant_type=client_credentials&client_id=AAAIgJEuGHf4LReD2lxXUiGEcrHHL5Q6&client_secret=PyEChDme4fGCMvzZ",
@@ -81,29 +83,21 @@ export class FlightSearch extends Component {
           Authorization: `Bearer ${token}` //token goes here
         };
 
-        // axios
-        //   .get(RAPIDAPI_API_URL, {
-        //     headers: RAPIDAPI_REQUEST_HEADERS
-        //   }) //use token to get data
-        //   .then(response => {
-        //     const data = response.data.data;
-        //     console.log("data", response, data.data);
-		//   });
-		  axios
-                .get(RAPIDAPI_API_URL, {
-                headers: RAPIDAPI_REQUEST_HEADERS
-                }) //use token to get data
-                .then(response => {
-                const data = response.data.data;
-                console.log('data', response, data.data);
-                this.setState({
-                    flights: data, //set the flights to state
-                    filteredFlights: data
-                });
-                })
-                .catch(error => {
-                console.error('create student error', error.response);
-                });
+        axios
+          .get(RAPIDAPI_API_URL, {
+            headers: RAPIDAPI_REQUEST_HEADERS
+          }) //use token to get data
+          .then(response => {
+            const data = response.data.data;
+            console.log("data", response, data.data);
+            this.setState({
+              flights: data, //set the flights to state
+              filteredFlights: data
+            });
+          })
+          .catch(error => {
+            console.error("create student error", error.response);
+          });
       });
   };
 
@@ -117,7 +111,9 @@ export class FlightSearch extends Component {
           <li>Depart: {flight.departureDate}</li>
           <li>Return: {flight.returnDate}</li>
           <li>Price: ${flight.price.total}</li>
-          <button>Check prices to {flight.destination}</button>
+          <button>
+            <Link to="/check-prices">Check prices to {flight.destination}</Link>
+          </button>
         </ul>
       );
     });

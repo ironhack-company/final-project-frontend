@@ -116,7 +116,7 @@ class App extends Component {
           />
           <Route
             exact
-            path="/check-price"
+            path="/check-prices"
             render={props => <CheckPrices {...props} user={this.state} />}
           />
 
