@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import actions from "../../services/index";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { Button, Jumbotron, Container, Form, Col, Row } from "react-bootstrap";
 
 
@@ -16,8 +16,14 @@ class LogIn extends Component {
     e.preventDefault();
     let user = await actions.logIn(this.state);
     this.props.setUser({ ...user.data });
+    this.setState({
+      loggedIn: true
+    })
   };
   render() {
+    if (this.state.loggedIn === true) {
+      return <Redirect to = '/flight-search' />
+    }
     return (
 
       <Jumbotron className="text-white mb-0 overflow-hidden d-flex justify-content-around flex-lg-nowrap flex-wrap min-vh-100 align-items-stretch bg">

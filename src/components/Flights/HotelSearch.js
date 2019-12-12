@@ -62,7 +62,7 @@ export default class HotelSearch extends Component {
             console.log(res, '?')
           }).catch(err => console.log(err))
       
-          const RAPIDAPI_API_URL = `https://test.api.amadeus.com/v2/shopping/hotel-offers?cityCode=PAR&adults=1&radius=5&radiusUnit=KM&paymentPolicy=NONE&includeClosed=false&bestRateOnly=true&view=FULL&sort=PRICE`;
+          const RAPIDAPI_API_URL = `https://test.api.amadeus.com/v2/shopping/hotel-offers?cityCode=MIA&adults=1&radius=50&radiusUnit=KM&paymentPolicy=NONE&includeClosed=false&bestRateOnly=true&view=FULL&sort=PRICE`;
       
     }
 

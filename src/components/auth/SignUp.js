@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import actions from "../../services/index";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 import { Button, Jumbotron, Container, Form, Col, Row } from "react-bootstrap";
 
@@ -11,8 +11,16 @@ class SignUp extends Component {
     e.preventDefault();
     let user = await actions.signUp(this.state);
     this.props.setUser({ ...user.data });
+    this.setState({
+      signedUp: true
+    })
   };
   render() {
+
+    if (this.state.signedUp === true) {
+      return <Redirect to = '/flight-search' />
+    } 
+    
     return (
       <Fragment>
         <div className="intro">
