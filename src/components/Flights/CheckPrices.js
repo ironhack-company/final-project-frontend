@@ -70,7 +70,35 @@ export default class CheckPrices extends Component {
                   .duration
               }
             </li>
-            <hr />
+            <li>
+              From
+              {
+                flight.offerItems[0].services[0].segments[1].flightSegment
+                  .departure.iataCode
+              }
+            </li>
+            <li>
+              To
+              {
+                flight.offerItems[0].services[0].segments[1].flightSegment
+                  .arrival.iataCode
+              }
+            </li>
+            <li>
+              Carrier
+              {
+                flight.offerItems[0].services[0].segments[1].flightSegment
+                  .operating.carrierCode
+              }
+            </li>
+            <li>
+              Duration
+              {
+                flight.offerItems[0].services[0].segments[1].flightSegment
+                  .duration
+              }
+            </li>
+
             <li>
               From
               {
@@ -96,6 +124,62 @@ export default class CheckPrices extends Component {
               Duration
               {
                 flight.offerItems[0].services[1].segments[0].flightSegment
+                  .duration
+              }
+            </li>
+            <li>
+              From
+              {
+                flight.offerItems[0].services[1].segments[0].flightSegment
+                  .departure.iataCode
+              }
+            </li>
+            <li>
+              To
+              {
+                flight.offerItems[0].services[1].segments[0].flightSegment
+                  .arrival.iataCode
+              }
+            </li>
+            <li>
+              Carrier
+              {
+                flight.offerItems[0].services[1].segments[0].flightSegment
+                  .operating.carrierCode
+              }
+            </li>
+            <li>
+              Duration
+              {
+                flight.offerItems[0].services[1].segments[0].flightSegment
+                  .duration
+              }
+            </li>
+            <li>
+              From
+              {
+                flight.offerItems[0].services[1].segments[1].flightSegment
+                  .departure.iataCode
+              }
+            </li>
+            <li>
+              To
+              {
+                flight.offerItems[0].services[1].segments[1].flightSegment
+                  .arrival.iataCode
+              }
+            </li>
+            <li>
+              Carrier
+              {
+                flight.offerItems[0].services[1].segments[1].flightSegment
+                  .operating.carrierCode
+              }
+            </li>
+            <li>
+              Duration
+              {
+                flight.offerItems[0].services[1].segments[1].flightSegment
                   .duration
               }
             </li>
