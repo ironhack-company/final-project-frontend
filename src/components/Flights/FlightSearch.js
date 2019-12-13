@@ -166,12 +166,28 @@ componentDidMount() {
     return this.state.filteredFlights.map((flight, index) => {
       console.log(flight);
       return (
-        <ul key={index}>
-          <li>From {flight.origin}</li>
-          <li>To {flight.destination}</li>
-          <li>Depart: {flight.departureDate}</li>
-          <li>Return: {flight.returnDate}</li>
-          <li>Price: ${flight.price.total}</li>
+        <ul className="flightDetails" key={index}>
+        	<li className="flightLocation">
+		  		<h3>✈️ {flight.origin} to {flight.destination}</h3>   		
+			</li>
+        	{/* <li className="flightLocation">
+		  		<h3>To:</h3> 
+				  	<p>{flight.destination}</p>
+			</li> */}
+        	<li className="flightDate">
+				<div className="dates">
+					<p><strong>from:</strong>{flight.departureDate} <strong>to:</strong>{flight.returnDate}</p>
+				</div>
+				
+			</li>
+          {/* <li className="flightDate">
+		  		<h4>Return:</h4>
+				  <p>{flight.returnDate}</p> 
+			</li> */}
+          <li className="flightPrice">
+		  	<h4>Price: </h4>
+			  <p>${flight.price.total}</p>
+			</li>
           {console.log(flight.links.flightOffers)}
           <button>
             <Link
@@ -268,24 +284,28 @@ render() {
           height={100}
           width={100}
           timeout={3000} //3 secs
+		  className = "loader"
         />
       );
       //return null;
     }
     return (
-      <div>
+      <div className = "flightSearchPage">
         <Fragment>
+		<div className = "flightSearch">
           <div>
-            <form onSubmit={this.handleSubmit}>
-              <input
-                placeholder="Input your location"
+            <form className="searchForm" onSubmit={this.handleSubmit}>
+              <input 
+			  	className="searchBar"
+                placeholder="Search aiports"
                 value={this.state.query}
                 onChange={this.handleInputChange}
               />
-              <input type="submit" value="Search cheap flights" />
+              <input className="searchBttn" type="submit" value="GO" />
             </form>
           </div>
-          <div className="showFlights">{this.showFlights()}</div>
+          	<div className="showFlights">{this.showFlights()}</div>
+		  </div>
         </Fragment>
 		<div className="mapDiv">
 		<Map
