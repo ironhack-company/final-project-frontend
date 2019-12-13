@@ -6,29 +6,6 @@ import { Link, Redirect } from "react-router-dom";
 import Loader from "react-loader-spinner";
 
 export class FlightSearch extends Component {
-<<<<<<< HEAD
-  state = {
-    searchQuery: "",
-    flights: [],
-    savedFlights: [],
-    filteredFlights: [],
-    userLocation: { lat: 32, lng: 32 },
-    loading: true,
-    showingInfoWindow: false,
-    activeMarker: {},
-    selectedPlace: {}
-  };
-  componentDidMount() {
-    console.log("Components!");
-    axios.get("http://localhost:5000/flight-search").then(data =>
-      this.setState({
-        airports: data.data
-      })
-    );
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        const { latitude, longitude } = position.coords;
-=======
 state = {
 	searchQuery: "",
   flights: [],
@@ -89,7 +66,6 @@ componentDidMount() {
 		}
 	}
 	
->>>>>>> 05748316925ff723bf2d92d29f88d26c09a1510f
 
 // 	getFlights = () => {
 // 		//get token on mount
@@ -219,7 +195,6 @@ componentDidMount() {
     });
   };
 
-<<<<<<< HEAD
   saveFlight = (e, flight) => {
     e.preventDefault()
     let copyUser = this.props.setUser
@@ -261,11 +236,9 @@ componentDidMount() {
       filteredFlights: filteredFlights
     });
   };
-=======
 	// onMouseoverMarker = (props, marker, e) => {
 	// 	console.log("hovering")
 	// 	if(!this.state.hovered) {
->>>>>>> 05748316925ff723bf2d92d29f88d26c09a1510f
 
 	// 		this.setState({
 	// 			selectedPlace: props,
