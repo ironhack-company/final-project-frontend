@@ -11,6 +11,7 @@ import moduleName from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Navbar, Nav, Form, FormControl, NavItem } from "react-bootstrap";
 import FlightSearch from "./components/Flights/FlightSearch";
+import CheapFlights from "./components/Flights/CheapFlights";
 import HotelSearch from "./components/Hotels/HotelSearch";
 import CheckPrices from "./components/Flights/CheckPrices";
 
@@ -93,9 +94,9 @@ class App extends Component {
                 </Fragment>
               ) : (
                 <Fragment>
-                  <NavLink className="mr-2 text-dark" to="/sign-up">
+                  {/* <NavLink className="mr-2 text-dark" to="/sign-up">
                     Sign Up
-                  </NavLink>
+                  </NavLink> */}
                   <NavLink className="mr-2 text-dark" to="/log-in">
                     Log In
                   </NavLink>
@@ -109,6 +110,11 @@ class App extends Component {
             exact
             path="/"
             render={props => <Home {...props} setUser={this.setUser} />}
+          />
+            <Route
+            exact
+            path="/cheap-flights"
+            render={props => <CheapFlights {...props} setUser={this.setUser} />}
           />
           <Route
             exact
