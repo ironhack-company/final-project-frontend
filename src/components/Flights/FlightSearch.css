@@ -1,0 +1,16 @@
+.mapDiv {
+    width: 65vw;
+    height: 90vh;
+    position: absolute;
+    right: 0;
+}
+
+.showFlights {
+    width: 35vw; 
+    position: absolute;
+    left: 0;
+    overflow: scroll;
+    height: 90vh;
+    margin: 20px;
+
+}

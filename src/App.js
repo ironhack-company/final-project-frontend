@@ -20,8 +20,34 @@ class App extends Component {
 
   async componentDidMount() {
     let user = await actions.isLoggedIn();
-    this.setState({ ...user.data });
+
+    let headers = await this.getToken();
+    console.log(headers);
+
+    this.setState({ ...user.data, headers });
   }
+
+  getToken = () => {
+    return fetch("https://test.api.amadeus.com/v1/security/oauth2/token", {
+      body:
+        "grant_type=client_credentials&client_id=AAAIgJEuGHf4LReD2lxXUiGEcrHHL5Q6&client_secret=PyEChDme4fGCMvzZ",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      method: "POST"
+    })
+      .then(res => res.json())
+      .then(r => {
+        console.log(r);
+        let token = r.access_token; //token comes here
+        const RAPIDAPI_API_URL = `https://test.api.amadeus.com/v1/shopping/flight-destinations?origin=${this.state.searchQuery}`; // if you fetch in componentDidMount it returns error because there is no origin when the page is loaded
+        console.log(this.state, RAPIDAPI_API_URL, "[][][[]");
+        const RAPIDAPI_REQUEST_HEADERS = {
+          Authorization: `Bearer ${token}` //token goes here
+        };
+        return RAPIDAPI_REQUEST_HEADERS;
+      });
+  };
 
   setUser = user => this.setState(user);
   logOut = async () => {
@@ -98,7 +124,13 @@ class App extends Component {
           <Route
             exact
             path="/flight-search"
-            render={props => <FlightSearch {...props} setUser={this.state} />}
+            render={props => (
+              <FlightSearch
+                {...props}
+                setUser={this.setUser}
+                headers={this.state.headers}
+              />
+            )}
           />
           <Route
             exact
@@ -123,7 +155,14 @@ class App extends Component {
           <Route
             exact
             path="/check-prices"
-            render={props => <CheckPrices {...props} user={this.state} />}
+            component={CheckPrices}
+            render={props => (
+              <CheckPrices
+                {...props}
+                user={this.state}
+                headers={this.state.headers}
+              />
+            )}
           />
 
           <Route component={NotFound} />
