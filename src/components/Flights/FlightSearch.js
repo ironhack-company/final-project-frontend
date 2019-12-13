@@ -6,9 +6,33 @@ import { Link, Redirect } from "react-router-dom";
 import Loader from "react-loader-spinner";
 
 export class FlightSearch extends Component {
+<<<<<<< HEAD
+  state = {
+    searchQuery: "",
+    flights: [],
+    savedFlights: [],
+    filteredFlights: [],
+    userLocation: { lat: 32, lng: 32 },
+    loading: true,
+    showingInfoWindow: false,
+    activeMarker: {},
+    selectedPlace: {}
+  };
+  componentDidMount() {
+    console.log("Components!");
+    axios.get("http://localhost:5000/flight-search").then(data =>
+      this.setState({
+        airports: data.data
+      })
+    );
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const { latitude, longitude } = position.coords;
+=======
 state = {
 	searchQuery: "",
-	flights: [],
+  flights: [],
+  savedFlights: [],
 	filteredFlights: [],
 	userLocation: { lat: 32, lng: 32 },
 	loading: true ,
@@ -65,6 +89,7 @@ componentDidMount() {
 		}
 	}
 	
+>>>>>>> 05748316925ff723bf2d92d29f88d26c09a1510f
 
 // 	getFlights = () => {
 // 		//get token on mount
@@ -202,14 +227,61 @@ componentDidMount() {
               Check prices to {flight.destination}
             </Link>
           </button>
+          <button onClick = {(e) => this.saveFlight(e, flight)}>
+            Save flight
+          </button>
         </ul>
       );
     });
   };
 
+<<<<<<< HEAD
+  saveFlight = (e, flight) => {
+    e.preventDefault()
+    let copyUser = this.props.setUser
+    copyUser.flights.push(flight)
+    let copyFlights = [...this.state.savedFlights]
+    this.setState({
+      user: copyUser,
+      savedFlights: copyFlights
+        }, () => {
+      console.log(this.state.user)
+      axios.post(`http://localhost:5000/add-flight/${copyUser._id}`, {
+        flights: this.state.user.flights
+      })
+      .then(data => {
+        console.log(data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    })
+
+  }
+
+  handleInputChange = e => {
+    console.log(this.state);
+    this.setState({
+      searchQuery: e.target.value
+    });
+    let filteredFlights = this.state.flights.filter((flight, i) => {
+      if (
+        flight.origin
+          .toLowerCase()
+          .includes(this.state.searchQuery.toLowerCase())
+      ) {
+        return flight;
+      }
+    });
+    this.setState({
+      filteredFlights: filteredFlights
+    });
+  };
+=======
 	// onMouseoverMarker = (props, marker, e) => {
 	// 	console.log("hovering")
 	// 	if(!this.state.hovered) {
+>>>>>>> 05748316925ff723bf2d92d29f88d26c09a1510f
 
 	// 		this.setState({
 	// 			selectedPlace: props,
