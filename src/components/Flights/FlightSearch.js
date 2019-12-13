@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import axios from "axios";
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from "google-maps-react";
-
+import './FlightSearch.css'
 export class FlightSearch extends Component {
 
 state = {
@@ -36,32 +36,31 @@ componentDidMount() {
 			this.setState({ loading: false });
 		}
 		);
+	
+		
 	}
     
 	getLocationData = () => {
 		if (this.state.airports) {
-
+			
 			return this.state.airports.map(eachAirport => {
-				return (
-	
-					<Marker 
-					title = {eachAirport.name}
-					onMouseover={this.onMouseoverMarker}
-					name={eachAirport.name}
-					position={{lat: eachAirport._geoloc.lat, lng: eachAirport._geoloc.lng }}
-					/>
-				)
-			}
-				)
-		}
-	}
-	onMouseoverMarker = (props, marker, e) => {
-			this.setState({
-				selectedPlace: props,
-				activeMarker: marker,
-				showingInfoWindow: true
+				if (eachAirport.country == "United States")
+				if (eachAirport.links_count > 15){
+					return (
+		
+						<Marker 
+						title = {eachAirport.name}
+						// onMouseover={this.onMouseoverMarker}
+						onClick={this.onClickOnMarker}
+						name={eachAirport.name}
+						code={eachAirport.iata_code}
+						position={{lat: eachAirport._geoloc.lat, lng: eachAirport._geoloc.lng }}
+						/>
+					)
+				}
 			})
 		}
+	}
 	
 
 	getFlights = () => {
@@ -75,12 +74,13 @@ componentDidMount() {
 			},
 			method: "POST"
 		})
+
 			.then(res => res.json())
 			.then(r => {
 			console.log(r);
 			let token = r.access_token; //token comes here
-			const RAPIDAPI_API_URL = `https://test.api.amadeus.com/v1/shopping/flight-destinations?origin=${this.state.searchQuery}`; // if you fetch in componentDidMount it returns error because there is no origin when the page is loaded
-			console.log(this.state, RAPIDAPI_API_URL, "[][][[]");
+			const RAPIDAPI_API_URL = `https://test.api.amadeus.com/v1/shopping/flight-destinations?origin=${this.state.searchQuery || this.state.searchCode}`; // if you fetch in componentDidMount it returns error because there is no origin when the page is loaded
+			// console.log(this.state, RAPIDAPI_API_URL, "[][][[]");
 			const RAPIDAPI_REQUEST_HEADERS = {
 				Authorization: `Bearer ${token}` //token goes here
 			};
@@ -97,6 +97,7 @@ componentDidMount() {
 					flights: data, //set the flights to state
 					filteredFlights: data
 				});
+				console.log(this.state.flights)
 				})
 				.catch(error => {
 				console.error("create student error", error.response);
@@ -117,13 +118,51 @@ componentDidMount() {
 			);
 		});
 		};
-	
+	// onMouseoverMarker = (props, marker, e) => {
+	// 	console.log("hovering")
+	// 	if(!this.state.hovered) {
+
+	// 		this.setState({
+	// 			selectedPlace: props,
+	// 			activeMarker: marker,
+	// 			showingInfoWindow: true,
+	// 			hovered: true
+	// 		})
+	// 	}
+	// 	}
+	onClickOnMarker = (props, marker, e) => {
+		this.setState({
+			selectedPlace: props,
+			activeMarker: marker,
+			showingInfoWindow: true,
+			clicked: true,
+			searchCode: props.code
+		})
+		console.log(this.state.flights)
+		this.getFlights()
+		let filteredFlights = this.state.flights.filter((flight, i) => {
+			if (
+			flight.origin
+				.toLowerCase()
+				.includes(this.state.searchCode.toLowerCase())
+			) {
+			return flight;
+			}
+		});
+		this.setState({
+			filteredFlights: filteredFlights
+		});
+		console.log(this.state.flights)
+		};
+
 		
 	handleInputChange = e => {
 		console.log(this.state);
+		
 		this.setState({
 			searchQuery: e.target.value
 		});
+
 		let filteredFlights = this.state.flights.filter((flight, i) => {
 			if (
 			flight.origin
@@ -145,7 +184,7 @@ componentDidMount() {
 	
 		
 	render() {
-		
+		console.log(this.state.flights)
 
 		const { loading, userLocation } = this.state;
 		const { google } = this.props;
@@ -166,26 +205,26 @@ componentDidMount() {
             <input type="submit" value="Search cheap flights" />
           </form>
         </div>
-        <div>{this.showFlights()}</div>
+        <div className="showFlights" >{this.showFlights()}</div>
       </Fragment>
-				 <Map
-        google={google}
-        initialCenter={userLocation}
-        zoom={10}>
-        <Marker onClick={this.onMarkerClick}
-                name={'Current location'} />
- {this.getLocationData()}
- 	<InfoWindow
-          marker={this.state.activeMarker}
-          visible={this.state.showingInfoWindow}>
-            <div>
-              <h1>{this.state.selectedPlace.name}</h1>
-            </div>
-        </InfoWindow>
-	
-	
+	<div className="mapDiv">
+		<Map
+			google={google}
+			initialCenter={userLocation}
+			zoom={10}>
 
-      </Map>
+			<Marker onClick={this.onMarkerClick}
+					name={'Current location'} />
+			{this.getLocationData()}
+			<InfoWindow
+			marker={this.state.activeMarker}
+			visible={this.state.showingInfoWindow}>
+				<div>
+				<h1>{this.state.selectedPlace.name}</h1>
+				</div>
+			</InfoWindow>
+		</Map>
+	  </div>
 
             </div>
         )
