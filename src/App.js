@@ -11,15 +11,42 @@ import moduleName from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Navbar, Nav, Form, FormControl, NavItem } from "react-bootstrap";
 import FlightSearch from "./components/Flights/FlightSearch";
-import HotelSearch from "./components/Flights/HotelSearch";
+import HotelSearch from "./components/Hotels/HotelSearch";
+import CheckPrices from "./components/Flights/CheckPrices";
 
 class App extends Component {
   state = {};
 
   async componentDidMount() {
     let user = await actions.isLoggedIn();
-    this.setState({ ...user.data });
+
+    let headers = await this.getToken();
+    console.log(headers);
+
+    this.setState({ ...user.data, headers });
   }
+
+  getToken = () => {
+    return fetch("https://test.api.amadeus.com/v1/security/oauth2/token", {
+      body:
+        "grant_type=client_credentials&client_id=AAAIgJEuGHf4LReD2lxXUiGEcrHHL5Q6&client_secret=PyEChDme4fGCMvzZ",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      method: "POST"
+    })
+      .then(res => res.json())
+      .then(r => {
+        console.log(r);
+        let token = r.access_token; //token comes here
+        const RAPIDAPI_API_URL = `https://test.api.amadeus.com/v1/shopping/flight-destinations?origin=${this.state.searchQuery}`; // if you fetch in componentDidMount it returns error because there is no origin when the page is loaded
+        console.log(this.state, RAPIDAPI_API_URL, "[][][[]");
+        const RAPIDAPI_REQUEST_HEADERS = {
+          Authorization: `Bearer ${token}` //token goes here
+        };
+        return RAPIDAPI_REQUEST_HEADERS;
+      });
+  };
 
   setUser = user => this.setState(user);
   logOut = async () => {
@@ -91,9 +118,15 @@ class App extends Component {
           <Route
             exact
             path="/flight-search"
-            render={props => <FlightSearch {...props} setUser={this.setUser} />}
+            render={props => (
+              <FlightSearch
+                {...props}
+                setUser={this.setUser}
+                headers={this.state.headers}
+              />
+            )}
           />
-           <Route
+          <Route
             exact
             path="/hotel-search"
             render={props => <HotelSearch {...props} setUser={this.setUser} />}
@@ -112,6 +145,18 @@ class App extends Component {
             exact
             path="/mytrips/:id"
             render={props => <MyTrips {...props} user={this.state} />}
+          />
+          <Route
+            exact
+            path="/check-prices"
+            component={CheckPrices}
+            render={props => (
+              <CheckPrices
+                {...props}
+                user={this.state}
+                headers={this.state.headers}
+              />
+            )}
           />
 
           <Route component={NotFound} />

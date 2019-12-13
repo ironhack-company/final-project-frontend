@@ -2,8 +2,10 @@ import React, { Component, Fragment } from "react";
 import axios from "axios";
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from "google-maps-react";
 import './FlightSearch.css'
-export class FlightSearch extends Component {
+import { Link, Redirect } from "react-router-dom";
+import Loader from "react-loader-spinner";
 
+export class FlightSearch extends Component {
 state = {
 	searchQuery: "",
 	flights: [],
@@ -43,7 +45,7 @@ componentDidMount() {
 	getLocationData = () => {
 		if (this.state.airports) {
 			
-			return this.state.airports.map(eachAirport => {
+			return this.state.airports.map((eachAirport, i) => {
 				if (eachAirport.country == "United States")
 				if (eachAirport.links_count > 15){
 					return (
@@ -55,6 +57,7 @@ componentDidMount() {
 						name={eachAirport.name}
 						code={eachAirport.iata_code}
 						position={{lat: eachAirport._geoloc.lat, lng: eachAirport._geoloc.lng }}
+						key={i}
 						/>
 					)
 				}
@@ -63,61 +66,131 @@ componentDidMount() {
 	}
 	
 
-	getFlights = () => {
-		//get token on mount
-		console.log("getFlight!");
-		fetch("https://test.api.amadeus.com/v1/security/oauth2/token", {
-			body:
-			"grant_type=client_credentials&client_id=AAAIgJEuGHf4LReD2lxXUiGEcrHHL5Q6&client_secret=PyEChDme4fGCMvzZ",
-			headers: {
-			"Content-Type": "application/x-www-form-urlencoded"
-			},
-			method: "POST"
-		})
+// 	getFlights = () => {
+// 		//get token on mount
+// 		console.log("getFlight!");
+// 		fetch("https://test.api.amadeus.com/v1/security/oauth2/token", {
+// 			body:
+// 			"grant_type=client_credentials&client_id=AAAIgJEuGHf4LReD2lxXUiGEcrHHL5Q6&client_secret=PyEChDme4fGCMvzZ",
+// 			headers: {
+// 			"Content-Type": "application/x-www-form-urlencoded"
+// 			},
+// 			method: "POST"
+// 		})
 
-			.then(res => res.json())
-			.then(r => {
-			console.log(r);
-			let token = r.access_token; //token comes here
-			const RAPIDAPI_API_URL = `https://test.api.amadeus.com/v1/shopping/flight-destinations?origin=${this.state.searchQuery || this.state.searchCode}`; // if you fetch in componentDidMount it returns error because there is no origin when the page is loaded
-			// console.log(this.state, RAPIDAPI_API_URL, "[][][[]");
-			const RAPIDAPI_REQUEST_HEADERS = {
-				Authorization: `Bearer ${token}` //token goes here
-			};
+// 			.then(res => res.json())
+// 			.then(r => {
+// 			console.log(r);
+// 			let token = r.access_token; //token comes here
+// 			const RAPIDAPI_API_URL = `https://test.api.amadeus.com/v1/shopping/flight-destinations?origin=${this.state.searchQuery || this.state.searchCode}`; // if you fetch in componentDidMount it returns error because there is no origin when the page is loaded
+// 			// console.log(this.state, RAPIDAPI_API_URL, "[][][[]");
+// 			const RAPIDAPI_REQUEST_HEADERS = {
+// 				Authorization: `Bearer ${token}` //token goes here
+// 			};
+//         this.setState({
+//           userLocation: { lat: latitude, lng: longitude },
+//           loading: false
+//         });
+//       },
+//       () => {
+//         this.setState({ loading: false });
+//       }
+//     );
+//   }
 
-			axios
-				.get(RAPIDAPI_API_URL, {
-				headers: RAPIDAPI_REQUEST_HEADERS
-				}) //use token to get data
-				.then(response => {
-				const data = response.data.data;
-				console.log("data", response, data.data);
+//   getLocationData = () => {
+//     if (this.state.airports) {
+//       return this.state.airports.map((eachAirport, i) => {
+//         return (
+//           <Marker
+//             title={eachAirport.name}
+//             onMouseover={this.onMouseoverMarker}
+//             name={eachAirport.name}
+//             position={{
+//               lat: eachAirport._geoloc.lat,
+//               lng: eachAirport._geoloc.lng
+//             }}
+//             key={i}
+//           />
+//         );
+//       });
+//     }
+//   };
+  onMouseoverMarker = (props, marker, e) => {
+    this.setState({
+      selectedPlace: props,
+      activeMarker: marker,
+      showingInfoWindow: true
+    });
+  };
 
-				this.setState({
-					flights: data, //set the flights to state
-					filteredFlights: data
-				});
-				console.log(this.state.flights)
-				})
-				.catch(error => {
-				console.error("create student error", error.response);
-				});
-			});
-		};
-	showFlights = () => {
-		return this.state.filteredFlights.map((flight, index) => {
-			console.log(flight);
-			return (
-			<ul key={index}>
-				<li>From {flight.origin}</li>
-				<li>To {flight.destination}</li>
-				<li>Depart: {flight.departureDate}</li>
-				<li>Return: {flight.returnDate}</li>
-				<li>Price: ${flight.price.total}</li>
-			</ul>
-			);
-		});
-		};
+  getFlights = () => {
+    //get token on mount
+    console.log("getFlight!");
+    // fetch("https://test.api.amadeus.com/v1/security/oauth2/token", {
+    //   body:
+    //     "grant_type=client_credentials&client_id=AAAIgJEuGHf4LReD2lxXUiGEcrHHL5Q6&client_secret=PyEChDme4fGCMvzZ",
+    //   headers: {
+    //     "Content-Type": "application/x-www-form-urlencoded"
+    //   },
+    //   method: "POST"
+    // })
+    //   .then(res => res.json())
+    //   .then(r => {
+    //     console.log(r);
+    //     let token = r.access_token; //token comes here
+    //     const RAPIDAPI_API_URL = `https://test.api.amadeus.com/v1/shopping/flight-destinations?origin=${this.state.searchQuery}`; // if you fetch in componentDidMount it returns error because there is no origin when the page is loaded
+    //     console.log(this.state, RAPIDAPI_API_URL, "[][][[]");
+    //     const RAPIDAPI_REQUEST_HEADERS = {
+    //       Authorization: `Bearer ${token}` //token goes here
+    //     };
+    const RAPIDAPI_API_URL = `https://test.api.amadeus.com/v1/shopping/flight-destinations?origin=${this.state.searchQuery || this.state.searchCode}`; // if you fetch in componentDidMount it returns error because there is no origin when the page is loaded
+    console.log(this);
+    axios
+      .get(RAPIDAPI_API_URL, { headers: this.props.headers }) //use token to get data
+      .then(response => {
+        const data = response.data.data;
+        console.log("data", response, data.data);
+        this.setState({
+          flights: data, //set the flights to state
+          filteredFlights: data
+        });
+      })
+      .catch(error => {
+        console.error("create student error", error.response);
+      });
+    //});
+  };
+
+  showFlights = () => {
+    return this.state.filteredFlights.map((flight, index) => {
+      console.log(flight);
+      return (
+        <ul key={index}>
+          <li>From {flight.origin}</li>
+          <li>To {flight.destination}</li>
+          <li>Depart: {flight.departureDate}</li>
+          <li>Return: {flight.returnDate}</li>
+          <li>Price: ${flight.price.total}</li>
+          {console.log(flight.links.flightOffers)}
+          <button>
+            <Link
+              to={{
+                pathname: "/check-prices",
+                props: {
+                  flightLink: `${flight.links.flightOffers}`,
+                  headers: this.props.headers
+                }
+              }}
+            >
+              Check prices to {flight.destination}
+            </Link>
+          </button>
+        </ul>
+      );
+    });
+  };
+
 	// onMouseoverMarker = (props, marker, e) => {
 	// 	console.log("hovering")
 	// 	if(!this.state.hovered) {
@@ -183,31 +256,38 @@ componentDidMount() {
 		};
 	
 		
-	render() {
-		console.log(this.state.flights)
+render() {
+    const { loading, userLocation } = this.state;
+    const { google } = this.props;
 
-		const { loading, userLocation } = this.state;
-		const { google } = this.props;
-	
-		if (loading) {
-		  return null;
-		}
-        return (
-            <div>
-			 <Fragment>
-        <div>
-          <form onSubmit={this.handleSubmit}>
-            <input
-              placeholder="Input your location"
-              value={this.state.query}
-              onChange={this.handleInputChange}
-            />
-            <input type="submit" value="Search cheap flights" />
-          </form>
-        </div>
-        <div className="showFlights" >{this.showFlights()}</div>
-      </Fragment>
-	<div className="mapDiv">
+    if (loading) {
+      return (
+        <Loader
+          type="Plane"
+          color="#00BFFF"
+          height={100}
+          width={100}
+          timeout={3000} //3 secs
+        />
+      );
+      //return null;
+    }
+    return (
+      <div>
+        <Fragment>
+          <div>
+            <form onSubmit={this.handleSubmit}>
+              <input
+                placeholder="Input your location"
+                value={this.state.query}
+                onChange={this.handleInputChange}
+              />
+              <input type="submit" value="Search cheap flights" />
+            </form>
+          </div>
+          <div className="showFlights">{this.showFlights()}</div>
+        </Fragment>
+		<div className="mapDiv">
 		<Map
 			google={google}
 			initialCenter={userLocation}
@@ -225,13 +305,12 @@ componentDidMount() {
 			</InfoWindow>
 		</Map>
 	  </div>
-
-            </div>
-        )
-	}
- 
+	</div>
+    );
+  }
 }
 
+
 export default GoogleApiWrapper({
-  apiKey: "AIzaSyC_Ryd8LuP-hChe7SPdvM_naB5ofhdF2QQ"
+  apiKey: ("AIzaSyC_Ryd8LuP-hChe7SPdvM_naB5ofhdF2QQ")
 })(FlightSearch);
