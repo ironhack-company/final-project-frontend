@@ -11,8 +11,9 @@ import moduleName from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Navbar, Nav, Form, FormControl, NavItem } from "react-bootstrap";
 import FlightSearch from "./components/Flights/FlightSearch";
-import HotelSearch from "./components/Flights/HotelSearch";
 import CheapFlights from "./components/Flights/CheapFlights";
+import HotelSearch from "./components/Hotels/HotelSearch";
+import CheckPrices from "./components/Flights/CheckPrices";
 
 class App extends Component {
   state = {};
@@ -97,9 +98,9 @@ class App extends Component {
           <Route
             exact
             path="/flight-search"
-            render={props => <FlightSearch {...props} setUser={this.setUser} />}
+            render={props => <FlightSearch {...props} setUser={this.state} />}
           />
-           <Route
+          <Route
             exact
             path="/hotel-search"
             render={props => <HotelSearch {...props} setUser={this.setUser} />}
@@ -118,6 +119,11 @@ class App extends Component {
             exact
             path="/mytrips/:id"
             render={props => <MyTrips {...props} user={this.state} />}
+          />
+          <Route
+            exact
+            path="/check-prices"
+            render={props => <CheckPrices {...props} user={this.state} />}
           />
 
           <Route component={NotFound} />

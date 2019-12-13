@@ -1,17 +1,27 @@
 import React, { Component, Fragment } from "react";
 import axios from "axios";
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from "google-maps-react";
+import { Link, Redirect } from "react-router-dom";
 
 export class FlightSearch extends Component {
   state = {
     searchQuery: "",
     flights: [],
+    savedFlights: [],
     filteredFlights: [],
     userLocation: { lat: 32, lng: 32 },
-    loading: true
+    loading: true,
+    showingInfoWindow: false,
+    activeMarker: {},
+    selectedPlace: {}
   };
-
   componentDidMount() {
+    console.log("Components!");
+    axios.get("http://localhost:5000/flight-search").then(data =>
+      this.setState({
+        airports: data.data
+      })
+    );
     navigator.geolocation.getCurrentPosition(
       position => {
         const { latitude, longitude } = position.coords;
@@ -26,6 +36,32 @@ export class FlightSearch extends Component {
       }
     );
   }
+
+  getLocationData = () => {
+    if (this.state.airports) {
+      return this.state.airports.map((eachAirport,i) => {
+        return (
+          <Marker
+            title={eachAirport.name}
+            onMouseover={this.onMouseoverMarker}
+            name={eachAirport.name}
+            position={{
+              lat: eachAirport._geoloc.lat,
+              lng: eachAirport._geoloc.lng
+            }}
+            key={i}
+          />
+        );
+      });
+    }
+  };
+  onMouseoverMarker = (props, marker, e) => {
+    this.setState({
+      selectedPlace: props,
+      activeMarker: marker,
+      showingInfoWindow: true
+    });
+  };
 
   getFlights = () => {
     //get token on mount
@@ -55,7 +91,6 @@ export class FlightSearch extends Component {
           .then(response => {
             const data = response.data.data;
             console.log("data", response, data.data);
-
             this.setState({
               flights: data, //set the flights to state
               filteredFlights: data
@@ -66,6 +101,50 @@ export class FlightSearch extends Component {
           });
       });
   };
+
+  showFlights = () => {
+    return this.state.filteredFlights.map((flight, index) => {
+      console.log(flight);
+      return (
+        <ul key={index}>
+          <li>From {flight.origin}</li>
+          <li>To {flight.destination}</li>
+          <li>Depart: {flight.departureDate}</li>
+          <li>Return: {flight.returnDate}</li>
+          <li>Price: ${flight.price.total}</li>
+          <button>
+            <Link to="/check-prices">Check prices to {flight.destination}</Link>
+          </button>
+          <button onClick = {(e) => this.saveFlight(e, flight)}>
+            Save flight
+          </button>
+        </ul>
+      );
+    });
+  };
+
+  saveFlight = (e, flight) => {
+    e.preventDefault()
+    let copyUser = this.props.setUser
+    copyUser.flights.push(flight)
+    let copyFlights = [...this.state.savedFlights]
+    this.setState({
+      user: copyUser,
+      savedFlights: copyFlights
+        }, () => {
+      console.log(this.state.user)
+      axios.post(`http://localhost:5000/add-flight/${copyUser._id}`, {
+        flights: this.state.user.flights
+      })
+      .then(data => {
+        console.log(data)
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    })
+
+  }
 
   handleInputChange = e => {
     console.log(this.state);
@@ -89,21 +168,6 @@ export class FlightSearch extends Component {
   handleSubmit = e => {
     e.preventDefault();
     this.getFlights(); //after the user told you what to
-  };
-
-  showFlights = () => {
-    return this.state.filteredFlights.map((flight, index) => {
-      console.log(flight);
-      return (
-        <ul key={index}>
-          <li>From {flight.origin}</li>
-          <li>To {flight.destination}</li>
-          <li>Depart: {flight.departureDate}</li>
-          <li>Return: {flight.returnDate}</li>
-          <li>Price: ${flight.price.total}</li>
-        </ul>
-      );
-    });
   };
 
   render() {
@@ -130,11 +194,14 @@ export class FlightSearch extends Component {
         </Fragment>
         <Map google={google} initialCenter={userLocation} zoom={10}>
           <Marker onClick={this.onMarkerClick} name={"Current location"} />
-
-          <InfoWindow onClose={this.onInfoWindowClose}>
-            {/* <div>
+          {this.getLocationData()}
+          <InfoWindow
+            marker={this.state.activeMarker}
+            visible={this.state.showingInfoWindow}
+          >
+            <div>
               <h1>{this.state.selectedPlace.name}</h1>
-            </div> */}
+            </div>
           </InfoWindow>
         </Map>
       </div>

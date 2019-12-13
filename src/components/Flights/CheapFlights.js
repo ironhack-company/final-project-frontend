@@ -9,6 +9,7 @@ import axios from 'axios'
 export default class HotelSearch extends Component {
     state = {
         searchQuery: "",
+        searchTo: "",
         flights: [],
         filteredFlights: [],
         userLocation: { lat: 32, lng: 32 },
@@ -47,7 +48,7 @@ export default class HotelSearch extends Component {
           .then(r => {
             console.log(r);
             let token = r.access_token; //token comes here
-            const RAPIDAPI_API_URL = `https://test.api.amadeus.com/v1/shopping/flight-offers?origin=MIA&destination=MAD&departureDate=2020-10-01&max=2`; // if you fetch in componentDidMount it returns error because there is no origin when the page is loaded
+            const RAPIDAPI_API_URL = `https://test.api.amadeus.com/v1/shopping/flight-offers?origin=${this.state.searchQuery}&destination=${this.state.searchTo}&departureDate=2020-10-01&max=50`; // if you fetch in componentDidMount it returns error because there is no origin when the page is loaded
             console.log(this.state, RAPIDAPI_API_URL, "[][][[]");
             const RAPIDAPI_REQUEST_HEADERS = {
               Authorization: `Bearer ${token}` //token goes here
@@ -91,6 +92,25 @@ export default class HotelSearch extends Component {
         });
       };
 
+      handleInputTo = e => {
+        console.log(this.state);
+        this.setState({
+          searchTo: e.target.value
+        });
+        let filteredFlights = this.state.flights.filter((flight, i) => {
+          if (
+            flight.origin
+              .toLowerCase()
+              .includes(this.state.searchTo.toLowerCase())
+          ) {
+            return flight;
+          }
+        });
+        this.setState({
+          filteredFlights: filteredFlights
+        });
+      };
+
       handleSubmit = e => {
         e.preventDefault();
         this.getFlights(); //after the user told you what to
@@ -99,13 +119,18 @@ export default class HotelSearch extends Component {
       showFlights = () => {
         return this.state.filteredFlights.map((flight, index) => {
           console.log(flight);
+          console.log(flight.offerItems[0].services[0].segments[0].flightSegment);
+
           return (
             <ul key={index}>
-              <li>From {flight.origin}</li>
-              <li>To {flight.destination}</li>
-              <li>Depart: {flight.departureDate}</li>
-              <li>Return: {flight.returnDate}</li>
-              <li>Price: ${flight.price.total}</li>
+              <li>From {flight.offerItems[0].services[0].segments[0].flightSegment.departure.iataCode}</li>
+              <li>To {flight.offerItems[0].services[0].segments[0].flightSegment.arrival.iataCode}</li>
+              <li>Carrier {flight.offerItems[0].services[0].segments[0].flightSegment.operating.carrierCode}</li>
+              <li>Duration {flight.offerItems[0].services[0].segments[0].flightSegment.duration}</li>
+
+
+              <li>Price {flight.offerItems[0].price.total}  </li>
+  
             </ul>
           );
         });
@@ -113,57 +138,57 @@ export default class HotelSearch extends Component {
 
 
 
-        componentDidMount() {
-            fetch("https://test.api.amadeus.com/v1/security/oauth2/token", {
-                body: "grant_type=client_credentials&client_id=AAAIgJEuGHf4LReD2lxXUiGEcrHHL5Q6&client_secret=PyEChDme4fGCMvzZ",
-                headers: {
-                  "Content-Type": "application/x-www-form-urlencoded"
-                },
-                method: "POST"
-              }).then(res => res.json()).then(r => {
-                console.log(r)
-                let token = r.access_token
+        // componentDidMount() {
+        //     fetch("https://test.api.amadeus.com/v1/security/oauth2/token", {
+        //         body: "grant_type=client_credentials&client_id=AAAIgJEuGHf4LReD2lxXUiGEcrHHL5Q6&client_secret=PyEChDme4fGCMvzZ",
+        //         headers: {
+        //           "Content-Type": "application/x-www-form-urlencoded"
+        //         },
+        //         method: "POST"
+        //       }).then(res => res.json()).then(r => {
+        //         console.log(r)
+        //         let token = r.access_token
           
-                const RAPIDAPI_REQUEST_HEADERS = {
-                  'Authorization': `Bearer ${token}`
-                };
+        //         const RAPIDAPI_REQUEST_HEADERS = {
+        //           'Authorization': `Bearer ${token}`
+        //         };
           
-                axios.get(RAPIDAPI_API_URL, { headers: RAPIDAPI_REQUEST_HEADERS })
-                  .then(response => {
-                    const data = response.data;
-                    console.log('data', data)
+        //         axios.get(RAPIDAPI_API_URL, { headers: RAPIDAPI_REQUEST_HEADERS })
+        //           .then(response => {
+        //             const data = response.data;
+        //             console.log('data', data)
                     
                     
-                    this.setState({
-                        flights: response.data,
+        //             this.setState({
+        //                 flights: response.data,
                       
+
+        //             });
     
-                    });
-    
-                  })
-                  .catch(error => {
-                    console.error('create student error', error.response)
-                    alert(JSON.stringify(error.response.data))
-                  })
-              })
+        //           })
+        //           .catch(error => {
+        //             console.error('create student error', error.response)
+        //             alert(JSON.stringify(error.response.data))
+        //           })
+        //       })
           
-              const config = {
-                headers: {
-                  'Content-Type': 'application/x-www-form-urlencoded'
-                }
-              }
+        //       const config = {
+        //         headers: {
+        //           'Content-Type': 'application/x-www-form-urlencoded'
+        //         }
+        //       }
           
-              axios.post('https://test.api.amadeus.com/v1/security/oauth2/token', {
-                grant_type: 'client_credentials',
-                client_id: 'AAAIgJEuGHf4LReD2lxXUiGEcrHHL5Q6',
-                client_secret: 'PyEChDme4fGCMvzZ'
-              }, config).then(res => {
-                console.log(res, '?')
-              }).catch(err => console.log(err))
+        //       axios.post('https://test.api.amadeus.com/v1/security/oauth2/token', {
+        //         grant_type: 'client_credentials',
+        //         client_id: 'AAAIgJEuGHf4LReD2lxXUiGEcrHHL5Q6',
+        //         client_secret: 'PyEChDme4fGCMvzZ'
+        //       }, config).then(res => {
+        //         console.log(res, '?')
+        //       }).catch(err => console.log(err))
           
-              const RAPIDAPI_API_URL = `https://test.api.amadeus.com/v1/shopping/flight-offers?origin=NYC&destination=MIA&departureDate=2020-10-01&max=2`;
+        //       const RAPIDAPI_API_URL = `https://test.api.amadeus.com/v1/shopping/flight-offers?origin=NYC&destination=MIA&departureDate=2020-10-01&max=2`;
           
-        }
+        // }
       
     
 
@@ -179,10 +204,17 @@ export default class HotelSearch extends Component {
                     value={this.state.query}
                     onChange={this.handleInputChange}
                   />
+                      <input
+                    placeholder="Input your location"
+                    value={this.state.query}
+                    onChange={this.handleInputTo}
+                  />
                   <input type="submit" value="Search cheap flights" />
+
+
                 </form>
               </div>
-              {/* <div>{this.showFlights()}</div> */}
+              <div>{this.showFlights()}</div>
             {/* </Fragment> */}
 
     
