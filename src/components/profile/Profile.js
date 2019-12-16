@@ -12,7 +12,6 @@ class Profile extends Component {
 
 
   showMyTrips = () => {
-    console.log(this.state.user)
     return this.state.user.trips.map((eachTrip) => {
       return (
         <li><Link to={`/mytrips/${eachTrip}`}>{eachTrip}</Link></li>

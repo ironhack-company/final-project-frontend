@@ -130,6 +130,7 @@ class App extends Component {
             render={props => (
               <FlightSearch
                 {...props}
+                user = {this.state}
                 setUser={this.setUser}
                 headers={this.state.headers}
               />
