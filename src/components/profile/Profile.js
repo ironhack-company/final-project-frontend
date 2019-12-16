@@ -19,6 +19,7 @@ class Profile extends Component {
     })
   }
 
+  
   showMyFlights = () => {
     if (this.state.user.trips) {
 
