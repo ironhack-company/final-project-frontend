@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import axios from "axios";
 import Loader from "react-loader-spinner";
+import { Link, Redirect } from "react-router-dom";
 
 export default class CheckPrices extends Component {
   constructor(props) {
@@ -32,17 +33,17 @@ export default class CheckPrices extends Component {
             loading: false
           });
           console.log(this.state.flightData);
-          axios
-            .post(
-              "https://test.api.amadeus.com/v1/shopping/flight-offers/pricing/",
-              response.data,
-              {
-                headers: this.props.location.props.headers
-              }
-            )
-            .then(response => {
-              console.log("third", response.data);
-            });
+          // axios
+          //   .post(
+          //     "https://test.api.amadeus.com/v1/shopping/flight-offers/pricing/",
+          //     response.data,
+          //     {
+          //       headers: this.props.location.props.headers
+          //     }
+          //   )
+          //   .then(response => {
+          //     console.log("third", response.data);
+          //   });
         })
         .catch(err => console.log(err));
       // this.showPrices();
@@ -54,163 +55,118 @@ export default class CheckPrices extends Component {
     if (this.state.flightData) {
       return this.state.flightData.map((flight, i) => {
         console.log(flight);
+        let outboundFlight = flight.offerItems[0].services[0];
+        let returnFlight = flight.offerItems[0].services[1];
         return (
           <ul key={i}>
-            <li>
-              From
-              {
-                flight.offerItems[0].services[0].segments[0].flightSegment
-                  .departure.iataCode
-              }
-            </li>
-            <li>
-              To
-              {
-                flight.offerItems[0].services[0].segments[0].flightSegment
-                  .arrival.iataCode
-              }
-            </li>
-            <li>
-              Carrier
-              {
-                flight.offerItems[0].services[0].segments[0].flightSegment
-                  .operating.carrierCode
-              }
-            </li>
-            <li>
-              Duration
-              {
-                flight.offerItems[0].services[0].segments[0].flightSegment
-                  .duration
-              }
-            </li>
-            <li>
-              From
-              {
-                flight.offerItems[0].services[0].segments[1].flightSegment
-                  .departure.iataCode
-              }
-            </li>
-            <li>
-              To
-              {
-                flight.offerItems[0].services[0].segments[1].flightSegment
-                  .arrival.iataCode
-              }
-            </li>
-            <li>
-              Carrier
-              {
-                flight.offerItems[0].services[0].segments[1].flightSegment
-                  .operating.carrierCode
-              }
-            </li>
-            <li>
-              Duration
-              {
-                flight.offerItems[0].services[0].segments[1].flightSegment
-                  .duration
-              }
-            </li>
-
-            <li>
-              From
-              {
-                flight.offerItems[0].services[1].segments[0].flightSegment
-                  .departure.iataCode
-              }
-            </li>
-            <li>
-              To
-              {
-                flight.offerItems[0].services[1].segments[0].flightSegment
-                  .arrival.iataCode
-              }
-            </li>
-            <li>
-              Carrier
-              {
-                flight.offerItems[0].services[1].segments[0].flightSegment
-                  .operating.carrierCode
-              }
-            </li>
-            <li>
-              Duration
-              {
-                flight.offerItems[0].services[1].segments[0].flightSegment
-                  .duration
-              }
-            </li>
-            <li>
-              From
-              {
-                flight.offerItems[0].services[1].segments[0].flightSegment
-                  .departure.iataCode
-              }
-            </li>
-            <li>
-              To
-              {
-                flight.offerItems[0].services[1].segments[0].flightSegment
-                  .arrival.iataCode
-              }
-            </li>
-            <li>
-              Carrier
-              {
-                flight.offerItems[0].services[1].segments[0].flightSegment
-                  .operating.carrierCode
-              }
-            </li>
-            <li>
-              Duration
-              {
-                flight.offerItems[0].services[1].segments[0].flightSegment
-                  .duration
-              }
-            </li>
-            <li>
-              From
-              {
-                flight.offerItems[0].services[1].segments[1].flightSegment
-                  .departure.iataCode
-              }
-            </li>
-            <li>
-              To
-              {
-                flight.offerItems[0].services[1].segments[1].flightSegment
-                  .arrival.iataCode
-              }
-            </li>
-            <li>
-              Carrier
-              {
-                flight.offerItems[0].services[1].segments[1].flightSegment
-                  .operating.carrierCode
-              }
-            </li>
-            <li>
-              Duration
-              {
-                flight.offerItems[0].services[1].segments[1].flightSegment
-                  .duration
-              }
-            </li>
-            <li>Price {flight.offerItems[0].price.total} </li>
+            <div>
+              <div className="outbound-container">
+                <li>
+                  From
+                  {outboundFlight.segments[0].flightSegment.departure.iataCode}
+                </li>
+                <li>
+                  To
+                  {outboundFlight.segments[0].flightSegment.arrival.iataCode}
+                </li>
+                <li>
+                  Carrier
+                  {
+                    outboundFlight.segments[0].flightSegment.operating
+                      .carrierCode
+                  }
+                </li>
+                <li>
+                  Duration
+                  {outboundFlight.segments[0].flightSegment.duration}
+                </li>
+                <li>
+                  From
+                  {outboundFlight.segments[1].flightSegment.departure.iataCode}
+                </li>
+                <li>
+                  To
+                  {outboundFlight.segments[1].flightSegment.arrival.iataCode}
+                </li>
+                <li>
+                  Carrier
+                  {
+                    outboundFlight.segments[1].flightSegment.operating
+                      .carrierCode
+                  }
+                </li>
+                <li>
+                  Duration
+                  {outboundFlight.segments[1].flightSegment.duration}
+                </li>
+              </div>
+              <div>
+                <li>
+                  From
+                  {returnFlight.segments[0].flightSegment.departure.iataCode}
+                </li>
+                <li>
+                  To
+                  {returnFlight.segments[0].flightSegment.arrival.iataCode}
+                </li>
+                <li>
+                  Carrier
+                  {returnFlight.segments[0].flightSegment.operating.carrierCode}
+                </li>
+                <li>
+                  Duration
+                  {returnFlight.segments[0].flightSegment.duration}
+                </li>
+                <li>
+                  From
+                  {returnFlight.segments[0].flightSegment.departure.iataCode}
+                </li>
+                <li>
+                  To
+                  {returnFlight.segments[0].flightSegment.arrival.iataCode}
+                </li>
+                <li>
+                  Carrier
+                  {returnFlight.segments[0].flightSegment.operating.carrierCode}
+                </li>
+                <li>
+                  Duration
+                  {returnFlight.segments[0].flightSegment.duration}
+                </li>
+                <li>
+                  From
+                  {returnFlight.segments[1].flightSegment.departure.iataCode}
+                </li>
+                <li>
+                  To
+                  {returnFlight.segments[1].flightSegment.arrival.iataCode}
+                </li>
+                <li>
+                  Carrier
+                  {returnFlight.segments[1].flightSegment.operating.carrierCode}
+                </li>
+                <li>
+                  Duration
+                  {returnFlight.segments[1].flightSegment.duration}
+                </li>
+                <li>Price {flight.offerItems[0].price.total} </li>
+              </div>
+            </div>
+            <button>
+              <Link
+                to={{
+                  pathname: "/passenger-details",
+                  flight: { flight }
+                }}
+              >
+                Book flight
+              </Link>
+            </button>
           </ul>
         );
       });
     }
   };
-
-  // showPrices = () => {
-  //   console.log("show prices!");
-  //   return this.state.flightData.map((flight, index) => {
-  //     console.log(flight);
-  //     return <ul key={index}></ul>;
-  //   });
-  // };
 
   render() {
     // const loading = this.state;
@@ -225,11 +181,6 @@ export default class CheckPrices extends Component {
     //     />
     //   );
     // }
-    return (
-      <Fragment>
-        {this.displayPrices()}
-        {/* <div>{this.showPrices()}</div> */}
-      </Fragment>
-    );
+    return <Fragment>{this.displayPrices()}</Fragment>;
   }
 }
