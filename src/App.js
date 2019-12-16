@@ -111,7 +111,7 @@ class App extends Component {
             path="/"
             render={props => <Home {...props} setUser={this.setUser} />}
           />
-            <Route
+          <Route
             exact
             path="/cheap-flights"
             render={props => <CheapFlights {...props} setUser={this.setUser} />}

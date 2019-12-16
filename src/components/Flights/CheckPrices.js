@@ -25,12 +25,26 @@ export default class CheckPrices extends Component {
         })
         .then(response => {
           let data = response.data.data;
+          console.log(response.data);
+          console.log(JSON.stringify(response.data.data));
           this.setState({
             flightData: data,
             loading: false
           });
           console.log(this.state.flightData);
-        });
+          axios
+            .post(
+              "https://test.api.amadeus.com/v1/shopping/flight-offers/pricing/",
+              response.data,
+              {
+                headers: this.props.location.props.headers
+              }
+            )
+            .then(response => {
+              console.log("third", response.data);
+            });
+        })
+        .catch(err => console.log(err));
       // this.showPrices();
     }
   };
