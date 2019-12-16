@@ -78,6 +78,9 @@ class App extends Component {
                   <NavLink className="mr-2 text-dark" to="/flight-search">
                     Flight
                   </NavLink>
+                  <NavLink className="mr-2 text-dark" to="/cheap-flights">
+                    Search flights
+                  </NavLink>
                   <NavLink className="mr-2 text-dark" to="/hotel-search">
                     Hotels
                   </NavLink>
@@ -127,6 +130,7 @@ class App extends Component {
             render={props => (
               <FlightSearch
                 {...props}
+                user = {this.state}
                 setUser={this.setUser}
                 headers={this.state.headers}
               />

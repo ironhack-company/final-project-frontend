@@ -2,6 +2,8 @@ import React, { Component, Fragment } from "react";
 import axios from "axios";
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from "google-maps-react";
 import "./FlightSearch.css";
+import "./FlightSearch2.css";
+
 import { Link, Redirect } from "react-router-dom";
 import Loader from "react-loader-spinner";
 
@@ -15,10 +17,22 @@ export class FlightSearch extends Component {
     loading: true,
     showingInfoWindow: false,
     activeMarker: {},
-    selectedPlace: {}
+    selectedPlace: {},
+
+    // background-image: url("../../images/logos/alaska.svg");
+
+    logos: [
+      { logo: "../../images/logos/alaska.svg", carrierId: 851 },
+      { logo: "./images/JetBlue.svg", carrierId: 870 },
+      { logo: "./images/frontier.svg", carrierId: 1065 },
+      { logo: "./images/spirit.svg", carrierId: 1467 },
+      { logo: "./images/sun.png", carrierId: 1721 },
+      { logo: "./images/united.svg", carrierId: 1793 }
+    ]
   };
   componentDidMount() {
     console.log("Components!");
+    // console.log(this.props)
     axios.get("http://localhost:5000/flight-search").then(data =>
       this.setState({
         airports: data.data
@@ -63,17 +77,15 @@ export class FlightSearch extends Component {
     }
   };
 
-  onMouseoverMarker = (props, marker, e) => {
-    this.setState({
-      selectedPlace: props,
-      activeMarker: marker,
-      showingInfoWindow: true
-    });
-  };
+  // onMouseoverMarker = (props, marker, e) => {
+  //   this.setState({
+  //     selectedPlace: props,
+  //     activeMarker: marker,
+  //     showingInfoWindow: true
+  //   });
+  // };
 
   getFlights = () => {
-    console.log("getFlight!");
-
     const RAPIDAPI_API_URL = `https://test.api.amadeus.com/v1/shopping/flight-destinations?origin=${this
       .state.searchQuery || this.state.searchCode}`; // if you fetch in componentDidMount it returns error because there is no origin when the page is loaded
     console.log(this);
@@ -90,60 +102,45 @@ export class FlightSearch extends Component {
       .catch(error => {
         console.error("create student error", error.response);
       });
+    //});
   };
 
-  showFlights = () => {
-    return this.state.filteredFlights.map((flight, index) => {
-      console.log(flight);
-      return (
-        <ul className="flightDetails" key={index}>
-          <li className="flightLocation">
-            <h3>
-              ✈️ {flight.origin} to {flight.destination}
-            </h3>
-          </li>
-          {/* <li className="flightLocation">
-					  <h3>To:</h3> 
-						  <p>{flight.destination}</p>
-				</li> */}
-          <li className="flightDate">
-            <div className="dates">
-              <p>
-                <strong>from:</strong>
-                {flight.departureDate} <strong>to:</strong>
-                {flight.returnDate}
-              </p>
-            </div>
-          </li>
-          <li className="flightPrice">
-            <h4>Price: </h4>
-            <p>${flight.price.total}</p>
-          </li>
-          {console.log(flight.links.flightOffers)}
-          <button>
-            <Link
-              to={{
-                pathname: "/check-prices",
-                props: {
-                  flightLink: `${flight.links.flightOffers}`,
-                  headers: this.props.headers
-                }
-              }}
-            >
-              Check prices to {flight.destination}
-            </Link>
-          </button>
-          <button onClick={e => this.saveFlight(e, flight)}>Save flight</button>
-        </ul>
-      );
-    });
-  };
+  // showFlights = () => {
+  //   return this.state.filteredFlights.map((flight, index) => {
+  //     console.log(flight);
+  //     return (
+  //       <ul key={index}>
+  //         <li>From {flight.origin}</li>
+  //         <li>To {flight.destination}</li>
+  //         <li>Depart: {flight.departureDate}</li>
+  //         <li>Return: {flight.returnDate}</li>
+  //         <li>Price: ${flight.price.total}</li>
+  //         {console.log(flight.links.flightOffers)}
+  //         <button>
+  //           <Link
+  //             to={{
+  //               pathname: "/check-prices",
+  //               props: {
+  //                 flightLink: `${flight.links.flightOffers}`,
+  //                 headers: this.props.headers
+  //               }
+  //             }}
+  //           >
+  //             Check prices to {flight.destination}
+  //           </Link>
+  //         </button>
+  //         <button onClick = {(e) => this.saveFlight(e, flight)}>
+  //           Save flight
+  //         </button>
+  //       </ul>
+  //     );
+  //   });
+  // };
 
   saveFlight = (e, flight) => {
     e.preventDefault();
-    console.log(this.props);
-    let copyUser = this.props.setUser;
-    console.log(copyUser);
+    console.log(this.props.user);
+    let copyUser = this.props.user;
     copyUser.flights.push(flight);
     let copyFlights = [...this.state.savedFlights];
     this.setState(
@@ -210,26 +207,215 @@ export class FlightSearch extends Component {
     console.log(this.state.flights);
   };
 
-  handleInputChange = e => {
-    console.log(this.state);
+  showFlights = () => {
+    return this.state.filteredFlights.map((flight, index) => {
+      console.log(flight);
+      return (
+        <div className="flight flex">
+          <div className="flight-buy">
+            <button>
+              <Link
+                to={{
+                  pathname: "/check-prices",
+                  props: {
+                    flightLink: `${flight.links.flightOffers}`,
+                    headers: this.props.headers
+                  }
+                }}
+              >
+                Check prices to {flight.destination}
+              </Link>
+            </button>
+            <button onClick={e => this.saveFlight(e, flight)}>
+              Save this flight
+            </button>
+            <p>{flight.price.total} USD</p>
+          </div>
+          <div className="flight-info flex">
+            <div>
+              {/* <h3></h3> */}
+              <span>{flight.origin}</span>
+              <span className="gray">
+                {/* { departure } */}
+                {flight.departureDate}
+              </span>
+            </div>
+            <div>
+              <span className="gray">
+                {/* {keyName.MinPrice} */}
+                🛫
+              </span>
+            </div>
+            <div>
+              {/* <h3></h3> */}
+              <span>{flight.destination}</span>
+              <span className="gray">{flight.returnDate}</span>
+            </div>
+          </div>
 
-    this.setState({
-      searchQuery: e.target.value
-    });
+          <div className="flight-info2 flex2">
+            <div>
+              {/* <h3></h3> */}
+              <span>{flight.destination}</span>
+              <span className="gray">
+                {/* { departure } */}
+                Outbound
+              </span>
+            </div>
+            <div>
+              <span className="gray">
+                {/* {keyName.MinPrice} USD */}
+                🛬
+              </span>
+            </div>
+            <div>
+              {/* <h3></h3> */}
+              <span>{flight.origin}</span>
+              <span className="gray">Outbound</span>
+            </div>
+          </div>
+        </div>
 
-    let filteredFlights = this.state.flights.filter((flight, i) => {
-      if (
-        flight.origin
-          .toLowerCase()
-          .includes(this.state.searchQuery.toLowerCase())
-      ) {
-        return flight;
-      }
-    });
-    this.setState({
-      filteredFlights: filteredFlights
+        // <div className="flight flex container" key={index}>
+        //   <div className="flight-buy row">
+        //     {/* <img src={logo} className="airline-logo" alt="Turkish airlines" /> */}
+        //     <button>
+        //       Buy ticket <br />
+        //       {` ${flight.price.total} `}
+        //     </button>
+        //   </div>
+        //   <div className="flight-info flex2">
+        //     <div>
+        //       {/* <p>{flight.departureDate}</p> */}
+        //       <p>{flight.origin}</p>
+
+        //       <span>{`${flight.departureDate}`}</span>
+        //       <span className="gray">
+        //         {flight.destination}
+        //       </span>
+        //     </div>
+        //     <div>
+        //       <span className="gray">
+        //         {`🛫`}
+        //       </span>
+        //     </div>
+        //     <div>
+        //       <p>{flight.destination}</p>
+        //       <span>{` ${flight.returnDate} `}</span>
+        //       <span className="gray">
+        //         {flight.origin}
+        //       </span>
+        //     </div>
+        //   </div>
+        // </div>
+
+        // <ul className="flightDetails" key={index}>
+        //   <li className="flightLocation">
+        //     <h3>✈️ {flight.origin} to {flight.destination}</h3>
+        //   </li>
+        //   {/* <li className="flightLocation">
+        // 	  <h3>To:</h3>
+        // 		  <p>{flight.destination}</p>
+        // </li> */}
+        //   <li className="flightDate">
+        //     <div className="dates">
+        //       <p><strong>from:</strong>{flight.departureDate} <strong>to:</strong>{flight.returnDate}</p>
+        //     </div>
+
+        //   </li>
+        //   <li className="flightPrice">
+        //     <h4>Price: </h4>
+        //     <p>${flight.price.total}</p>
+        //   </li>
+        //   {console.log(flight.links.flightOffers)}
+        //   <button>
+        //     <Link
+        //       to={{
+        //         pathname: "/check-prices",
+        //         props: {
+        //           flightLink: `${flight.links.flightOffers}`,
+        //           headers: this.props.headers
+        //         }
+        //       }}
+        //     >
+        //       Check prices to {flight.destination}
+        //     </Link>
+        //   </button>
+        //   <button onClick={(e) => this.saveFlight(e, flight)}>
+        //     Save flight
+        // </button>
+        // </ul>
+      );
     });
   };
+
+  // saveFlight = (e, flight) => {
+  //   console.log(this.props.user)
+  //   e.preventDefault()
+  //   let copyUser = this.props.setUser
+  //   copyUser.flights.push(flight)
+  //   let copyFlights = [...this.state.savedFlights]
+  //   this.setState({
+  //     user: copyUser,
+  //     savedFlights: copyFlights
+  //   }, () => {
+  //     console.log(this.state.user)
+  //     axios.post(`http://localhost:5000/add-flight/${copyUser._id}`, {
+  //       flights: this.state.user.flights
+  //     })
+  //       .then(data => {
+  //         console.log(data)
+  //       })
+  //       .catch(err => {
+  //         console.log(err)
+  //       })
+  //   })
+
+  // }
+
+  // handleInputChange = e => {
+  // console.log(this.state);
+  // this.setState({
+  //   searchQuery: e.target.value
+  // });
+  // let filteredFlights = this.state.flights.filter((flight, i) => {
+  //   if (
+  // 	flight.origin
+  // 	  .toLowerCase()
+  // 	  .includes(this.state.searchQuery.toLowerCase())
+  //   ) {
+  // 	return flight;
+  //   }
+  // });
+  // this.setState({
+  //   filteredFlights: filteredFlights
+  // });
+  // };
+
+  // onClickOnMarker = (props, marker, e) => {
+  // 		this.setState({
+  // 			selectedPlace: props,
+  // 			activeMarker: marker,
+  // 			showingInfoWindow: true,
+  // 			clicked: true,
+  // 			searchCode: props.code
+  // 		})
+  // 		console.log(this.state.flights)
+  // 		this.getFlights()
+  // 		let filteredFlights = this.state.flights.filter((flight, i) => {
+  // 			if (
+  // 			flight.origin
+  // 				.toLowerCase()
+  // 				.includes(this.state.searchCode.toLowerCase())
+  // 			) {
+  // 			return flight;
+  // 			}
+  // 		});
+  // 		this.setState({
+  // 			filteredFlights: filteredFlights
+  // 		});
+  // 		console.log(this.state.flights)
+  // 		};
 
   handleSubmit = e => {
     e.preventDefault();
@@ -254,9 +440,10 @@ export class FlightSearch extends Component {
       //return null;
     }
     return (
-      <div className="flightSearchPage">
+      // <div className="container">
+      <div className="flightSearchPage row">
         <Fragment>
-          <div className="flightSearch">
+          <div className="flightSearch col">
             <div>
               <form className="searchForm" onSubmit={this.handleSubmit}>
                 <input
@@ -271,7 +458,7 @@ export class FlightSearch extends Component {
             <div className="showFlights">{this.showFlights()}</div>
           </div>
         </Fragment>
-        <div className="mapDiv">
+        <div className="mapDiv col">
           <Map google={google} initialCenter={userLocation} zoom={10}>
             <Marker onClick={this.onMarkerClick} name={"Current location"} />
             {this.getLocationData()}
@@ -286,6 +473,7 @@ export class FlightSearch extends Component {
           </Map>
         </div>
       </div>
+      // </div>
     );
   }
 }
